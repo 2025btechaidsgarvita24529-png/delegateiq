@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Assistant — DelegateIQ</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="app-page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark">D</div><span class="logo-text">DelegateIQ</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+      <a href="ai-chat.html" class="nav-item active"><span class="nav-icon">🤖</span><span>AI Assistant</span></a>
+      <a href="research.html" class="nav-item"><span class="nav-icon">🔍</span><span>Research</span></a>
+      <a href="resolutions.html" class="nav-item"><span class="nav-icon">📜</span><span>Resolutions</span></a>
+      <div class="nav-section-label">Community</div>
+      <a href="network.html" class="nav-item"><span class="nav-icon">👥</span><span>Network</span></a>
+      <a href="chats.html" class="nav-item"><span class="nav-icon">💬</span><span>Chats</span></a>
+      <div class="nav-section-label">You</div>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span>Profile</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">🏅</span><span>Badges</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user" onclick="location.href='profile.html'">
+        <div class="avatar-btn" id="sidebarAvatar">?</div>
+        <div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+          <div class="sidebar-user-role" id="sidebarSchool">Member</div>
+        </div>
+      </div>
+      <a href="#" class="nav-item" id="logoutBtn"><span class="nav-icon">🚪</span><span>Logout</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content chat-main">
+    <header class="app-header">
+      <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;">
+        <h2 style="white-space:nowrap;">🤖 AI Assistant</h2>
+        <div class="ctx-pills" id="ctxPills"></div>
+      </div>
+      <div class="header-right">
+        <!-- BELL ICON WITH DROPDOWN -->
+        <div style="position:relative;">
+          <button class="notif-btn" id="bellBtn" onclick="toggleNotifications()">
+            🔔<span class="notif-dot" id="notifDot"></span>
+          </button>
+          <div id="notifDropdown" style="display:none;position:absolute;right:0;top:44px;width:280px;background:white;border:1.5px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);z-index:999;overflow:hidden;">
+            <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:14px;font-weight:800;color:var(--text-primary);">Notifications</span>
+              <button onclick="clearNotifications()" style="font-size:11px;color:var(--amber);font-weight:700;background:none;border:none;cursor:pointer;">Clear all</button>
+            </div>
+            <div id="notifList">
+              <div style="padding:12px 16px;border-bottom:1px solid var(--bg-warm);">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <span style="font-size:18px;">🏅</span>
+                  <div>
+                    <p style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:2px;">Badge Earned: First Step</p>
+                    <p style="font-size:11px;color:var(--text-muted);font-weight:600;">You joined DelegateIQ!</p>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:12px 16px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <span style="font-size:18px;">🤖</span>
+                  <div>
+                    <p style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:2px;">AI Assistant Ready</p>
+                    <p style="font-size:11px;color:var(--text-muted);font-weight:600;">Ask anything about your committee!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="avatar-btn" id="headerAvatar" onclick="location.href='profile.html'">?</div>
+      </div>
+    </header>
+
+    <div class="chat-container" id="chatContainer">
+      <div class="chat-welcome" id="chatWelcome">
+        <div class="welcome-orb">🤖</div>
+        <h3>DelegateIQ AI</h3>
+        <p id="welcomeCtx" style="font-size:14px;color:var(--text-secondary);font-weight:600;margin-bottom:6px;"></p>
+        <p class="welcome-note">Powered by Groq AI. Ask me anything — you'll get a full, detailed answer every time. Click "Explain more" for even deeper analysis. Copy any response instantly.</p>
+        <div class="suggestions" id="suggestionsBox"></div>
+      </div>
+      <div id="messages"></div>
+      <div class="typing-indicator" id="typingIndicator" style="display:none">
+        <div class="typing-avatar">AI</div>
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <div class="chat-input-bar">
+      <div class="chat-input-wrap">
+        <div class="ctx-tag" id="inputCtxTag">🏛️ Set up context</div>
+        <textarea id="chatInput" placeholder="Ask anything about your committee, country, or MUN..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <div class="input-btns">
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="input-note">Powered by Groq AI (Llama 3.3) · For research purposes · Verify with official UN documents</p>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",
+      authDomain: "delegate-iq-2025.firebaseapp.com",
+      projectId: "delegate-iq-2025",
+      storageBucket: "delegate-iq-2025.firebasestorage.app",
+      messagingSenderId: "612696020579",
+      appId: "1:612696020579:web:90255861a0d531f2580a56"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    let munSetup = {};
+    let userProfile = {};
+    let conversationHistory = [];
+    try { munSetup = JSON.parse(localStorage.getItem('diq_setup') || '{}'); } catch(e){}
+    try { userProfile = JSON.parse(localStorage.getItem('diq_profile') || '{}'); } catch(e){}
+
+    const committee = munSetup.committee || '';
+    const country = munSetup.country || '';
+    const topic = munSetup.topic || '';
+
+    const systemPrompt = `You are DelegateIQ, an expert MUN (Model United Nations) AI assistant with deep knowledge of UN resolutions, international law, country foreign policies, MUN procedure, and debate strategy.
+
+${committee ? `The delegate is in committee: ${committee}` : ''}
+${country ? `They represent: ${country}` : ''}
+${topic ? `Agenda topic: ${topic}` : ''}
+
+HOW TO ANSWER — VERY IMPORTANT:
+- ALWAYS give complete, thorough answers — never one or two lines
+- Every answer must have proper depth with background, current situation, key facts
+- Use **bold** for headings and important terms
+- When asked about a country position: give historical context, current stance, key arguments, relevant UN resolutions with numbers
+- When asked about a topic: explain background properly, UN framework, key debates between blocs
+- When asked about procedure: give specific practical guidance with examples
+- Always cite real UN resolution numbers (e.g. UNSC Res. 2254, UNGA Res. 3314)
+- Write minimum 150-200 words per answer
+- Format clearly with sections when the answer is complex
+- Write as if explaining to a smart student who needs this for a real committee debate`;
+
+    auth.onAuthStateChanged(user => {
+      if (!user) { window.location.href = 'login.html'; return; }
+      const displayName = userProfile.displayName || user.displayName || user.email.split('@')[0];
+      const initials = userProfile.initials || displayName.substring(0,2).toUpperCase();
+      document.getElementById('sidebarName').textContent = displayName;
+      document.getElementById('sidebarSchool').textContent = userProfile.school || 'Member';
+      document.getElementById('sidebarAvatar').textContent = initials;
+      document.getElementById('headerAvatar').textContent = initials;
+
+      const pills = document.getElementById('ctxPills');
+      if (committee) pills.innerHTML += `<span class="ctx-pill">${committee}</span>`;
+      if (topic) pills.innerHTML += `<span class="ctx-pill">${topic}</span>`;
+      if (country) pills.innerHTML += `<span class="ctx-pill country">🌍 ${country}</span>`;
+      if (!committee && !country) pills.innerHTML = `<span class="ctx-pill" style="color:var(--amber);"><a href="dashboard.html" style="color:var(--amber);">⚡ Set up MUN context</a></span>`;
+
+      document.getElementById('welcomeCtx').textContent = (committee || country || topic)
+        ? 'Context: ' + [committee, topic, country].filter(Boolean).join(' · ')
+        : 'No context set — go to Dashboard to set up!';
+
+      document.getElementById('inputCtxTag').textContent = '🏛️ ' + (committee || 'No committee') + (country ? ' · ' + country : '');
+
+      const suggestions = committee || country ? [
+        country ? `What is ${country}'s position on ${topic || 'this topic'} and why?` : `What are the key debates in ${committee}?`,
+        topic ? `Explain the full background and history of ${topic}` : `What procedure rules are most important in ${committee}?`,
+        `How do I write a strong opening speech${country ? ' for ' + country : ''}?`,
+        country ? `What counter-arguments will opposing blocs use against ${country}?` : `How do I raise a Point of Order correctly?`
+      ] : [
+        'Explain how the UN Security Council works and its powers',
+        'How do I write preambulatory and operative clauses?',
+        'What is a Point of Order and when should I use it?',
+        'How do I prepare a strong position paper?'
+      ];
+
+      document.getElementById('suggestionsBox').innerHTML = suggestions.map(s =>
+        `<button class="suggestion" onclick="askSuggestion(this)">${s}</button>`
+      ).join('');
+
+      // Check prefill from research page
+      const prefill = localStorage.getItem('diq_ai_prefill');
+      if (prefill) { localStorage.removeItem('diq_ai_prefill'); document.getElementById('chatInput').value = prefill; }
+    });
+
+    // ─── CALL AI VIA NETLIFY PROXY ───
+    // Works on localhost AND Netlify — no CORS issues!
+    async function callAI(messages) {
+      // Detect if running locally or on Netlify
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+      // On local — call Groq directly (will work if CORS is allowed, otherwise show message)
+      // On Netlify — call via our serverless proxy
+      const apiUrl = isLocal
+        ? 'https://api.groq.com/openai/v1/chat/completions'
+        : '/.netlify/functions/ai';
+
+      if (isLocal) {
+        // Direct Groq call for local testing
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getGroqKey()}`
+          },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            max_tokens: 1500,
+            messages: [{ role: 'system', content: systemPrompt }, ...messages]
+          })
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error.message);
+        return data.choices[0].message.content;
+      } else {
+        // Via Netlify proxy
+        const response = await fetch('/.netlify/functions/ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages, system: systemPrompt })
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        return data.content;
+      }
+    }
+
+    function getGroqKey() {
+      // Store key in localStorage so you don't hardcode it
+      let key = localStorage.getItem('diq_groq_key');
+      if (!key) {
+        key = prompt('Enter your Groq API key to enable AI (get it free at console.groq.com):');
+        if (key) localStorage.setItem('diq_groq_key', key);
+      }
+      return key;
+    }
+
+    window.sendMessage = async function() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      document.getElementById('chatWelcome').style.display = 'none';
+      appendUserMsg(text);
+      input.value = '';
+      input.style.height = 'auto';
+
+      const btn = document.getElementById('sendBtn');
+      btn.disabled = true;
+      document.getElementById('typingIndicator').style.display = 'flex';
+      scrollBottom();
+
+      conversationHistory.push({ role: 'user', content: text });
+
+      try {
+        const reply = await callAI(conversationHistory);
+        conversationHistory.push({ role: 'assistant', content: reply });
+        if (conversationHistory.length > 10) conversationHistory = conversationHistory.slice(-10);
+
+        document.getElementById('typingIndicator').style.display = 'none';
+        appendAIMsg(text, reply);
+
+        // Update research count + badges
+        try {
+          const p = JSON.parse(localStorage.getItem('diq_profile') || '{}');
+          p.researchCount = (p.researchCount || 0) + 1;
+          if (!p.badges) p.badges = ['first_login'];
+          if (p.researchCount === 1 && !p.badges.includes('first_research')) {
+            p.badges.push('first_research');
+            showBadgeToast('🔍', 'Researcher', 'First research session!');
+          }
+          if (p.researchCount >= 10 && !p.badges.includes('ten_research')) {
+            p.badges.push('ten_research');
+            showBadgeToast('🎓', 'Scholar', '10 research sessions!');
+          }
+          localStorage.setItem('diq_profile', JSON.stringify(p));
+        } catch(e){}
+
+      } catch(err) {
+        document.getElementById('typingIndicator').style.display = 'none';
+        const msg = err.message.includes('401') ? 'Invalid API key. Please check your Groq API key.' :
+                    err.message.includes('429') ? 'Rate limit reached. Please wait a moment and try again.' :
+                    err.message.includes('Failed to fetch') ? 'Could not connect. On Netlify this works automatically. For local testing, upload to Netlify first.' :
+                    'Error: ' + err.message;
+        appendErrorMsg(msg);
+      }
+
+      btn.disabled = false;
+      scrollBottom();
+    };
+
+    function appendUserMsg(text) {
+      const msgs = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'chat-msg user';
+      div.innerHTML = `<div class="chat-bubble">${esc(text)}</div>`;
+      msgs.appendChild(div);
+      scrollBottom();
+    }
+
+    function appendErrorMsg(text) {
+      const msgs = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'chat-msg ai';
+      div.innerHTML = `
+        <div class="chat-ai-avatar" style="background:var(--terracotta);">!</div>
+        <div class="chat-bubble" style="background:var(--terra-pale);border-color:rgba(194,98,63,0.3);">
+          <p style="color:var(--terracotta);font-weight:600;font-size:14px;">${esc(text)}</p>
+        </div>`;
+      msgs.appendChild(div);
+    }
+
+    function appendAIMsg(question, text) {
+      const msgs = document.getElementById('messages');
+      const id = 'msg' + Date.now();
+      const div = document.createElement('div');
+      div.className = 'chat-msg ai';
+      div.innerHTML = `
+        <div class="chat-ai-avatar">AI</div>
+        <div class="chat-bubble" id="${id}">
+          <div class="ai-full-answer" id="ans-${id}">${formatText(esc(text))}</div>
+          <div class="ai-actions">
+            <button class="action-btn expand-btn" id="expbtn-${id}" onclick="loadDeeper('${id}','${esc(question)}','${esc(text)}')">📖 Explain more</button>
+            <button class="action-btn" onclick="copyMsg('${id}',this)">📋 Copy</button>
+          </div>
+          <div id="exp-${id}" style="display:none;">
+            <div class="expanded-divider"></div>
+            <div class="expanded-text" id="deep-${id}">
+              <div style="color:var(--text-muted);font-size:13px;font-weight:600;">🔄 Loading deeper analysis from AI...</div>
+            </div>
+          </div>
+        </div>`;
+      msgs.appendChild(div);
+    }
+
+    window.loadDeeper = async function(id, question, answer) {
+      const btn = document.getElementById('expbtn-' + id);
+      const expDiv = document.getElementById('exp-' + id);
+      const deepDiv = document.getElementById('deep-' + id);
+
+      if (expDiv.style.display !== 'none' && deepDiv.dataset.loaded) {
+        expDiv.style.display = 'none';
+        btn.textContent = '📖 Explain more';
+        return;
+      }
+
+      expDiv.style.display = 'block';
+      btn.textContent = '⏳ Loading...';
+      btn.disabled = true;
+      scrollBottom();
+
+      try {
+        const deeper = await callAI([
+          { role: 'user', content: question },
+          { role: 'assistant', content: answer },
+          { role: 'user', content: 'Go much deeper. Add specific examples, historical timeline, key UN resolutions with numbers and dates, how different country blocs view this, and practical debate strategy tips for using this in committee.' }
+        ]);
+        deepDiv.innerHTML = formatText(esc(deeper));
+        deepDiv.dataset.loaded = 'true';
+        btn.textContent = '📕 Show less';
+        btn.disabled = false;
+        btn.onclick = function() {
+          expDiv.style.display = 'none';
+          btn.textContent = '📖 Explain more';
+          btn.onclick = function() { loadDeeper(id, question, answer); };
+        };
+      } catch(err) {
+        deepDiv.innerHTML = `<p style="color:var(--terracotta);font-size:13px;font-weight:600;">Could not load deeper explanation. Try again.</p>`;
+        btn.textContent = '📖 Explain more';
+        btn.disabled = false;
+      }
+      scrollBottom();
+    };
+
+    window.copyMsg = function(id, btn) {
+      const ans = document.getElementById('ans-' + id)?.textContent || '';
+      const deep = document.getElementById('deep-' + id)?.textContent || '';
+      const deepText = deep && !deep.includes('Loading') ? '\n\n--- Deeper Analysis ---\n' + deep : '';
+      navigator.clipboard.writeText(ans + deepText);
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    };
+
+    // Badge toast notification
+    function showBadgeToast(icon, name, desc) {
+      const toast = document.createElement('div');
+      toast.className = 'badge-toast';
+      toast.innerHTML = `<div class="toast-emoji">${icon}</div><div class="toast-text"><p>🏅 Badge Unlocked!</p><h4>${name}</h4><span>${desc}</span></div>`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 4000);
+    }
+
+    // Bell notifications
+    window.toggleNotifications = function() {
+      const dd = document.getElementById('notifDropdown');
+      dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+      document.getElementById('notifDot').style.display = 'none';
+    };
+
+    window.clearNotifications = function() {
+      document.getElementById('notifList').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px;font-weight:600;">No notifications</div>';
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', e => {
+      const bell = document.getElementById('bellBtn');
+      const dd = document.getElementById('notifDropdown');
+      if (dd && !bell?.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none';
+
+      const sb = document.getElementById('sidebar');
+      const tg = document.querySelector('.sidebar-toggle');
+      if (sb.classList.contains('open') && !sb.contains(e.target) && !tg?.contains(e.target)) sb.classList.remove('open');
+    });
+
+    window.askSuggestion = function(btn) {
+      document.getElementById('chatInput').value = btn.textContent;
+      sendMessage();
+      document.getElementById('chatWelcome').style.display = 'none';
+    };
+    window.handleKey = function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
+    window.autoResize = function(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; };
+
+    function formatText(t) {
+      return t
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '</p><p style="margin-bottom:10px;">')
+        .replace(/\n• /g, '<br/>• ')
+        .replace(/\n- /g, '<br/>• ')
+        .replace(/\n(\d+)\. /g, (m, n) => '<br/><strong>' + n + '.</strong> ')
+        .replace(/\n/g, '<br/>')
+        .replace(/^/, '<p style="margin-bottom:10px;">')
+        .replace(/$/, '</p>');
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function scrollBottom() { const c = document.getElementById('chatContainer'); setTimeout(() => c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' }), 100); }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await auth.signOut();
+      localStorage.removeItem('diq_profile');
+      localStorage.removeItem('diq_setup');
+      window.location.href = '../index.html';
+    });
+  </script>
+</body>
+</html>

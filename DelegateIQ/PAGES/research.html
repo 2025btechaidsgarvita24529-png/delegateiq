@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Research — DelegateIQ</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="app-page">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark">D</div><span class="logo-text">DelegateIQ</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
+      <a href="ai-chat.html" class="nav-item"><span class="nav-icon">🤖</span><span>AI Assistant</span></a>
+      <a href="research.html" class="nav-item active"><span class="nav-icon">🔍</span><span>Research</span></a>
+      <a href="resolutions.html" class="nav-item"><span class="nav-icon">📜</span><span>Resolutions</span></a>
+      <div class="nav-section-label">Community</div>
+      <a href="coming-soon.html?page=network" class="nav-item"><span class="nav-icon">👥</span><span>Network</span></a>
+      <a href="coming-soon.html?page=chats" class="nav-item"><span class="nav-icon">💬</span><span>Chats</span></a>
+      <div class="nav-section-label">You</div>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span>Profile</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">🏅</span><span>Badges</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user" onclick="location.href='profile.html'">
+        <div class="avatar-btn" id="sidebarAvatar">?</div>
+        <div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+          <div class="sidebar-user-role" id="sidebarSchool">Member</div>
+        </div>
+      </div>
+      <a href="#" class="nav-item" id="logoutBtn"><span class="nav-icon">🚪</span><span>Logout</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="app-header">
+      <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <h2>🔍 Research</h2>
+      <div class="header-right">
+        <div class="avatar-btn" id="headerAvatar">?</div>
+      </div>
+    </header>
+
+    <div class="research-body">
+
+      <div class="research-hero">
+        <h2>UN Document Search</h2>
+        <p>AI finds real UN resolutions, treaties and reports for your topic — with document numbers, summaries, and direct links to verify on the UN Digital Library.</p>
+        <div class="research-bar">
+          <span class="rs-icon">🔍</span>
+          <input type="text" id="researchInput" placeholder="e.g. human trafficking, climate change, nuclear weapons..." onkeydown="if(event.key==='Enter') doSearch()"/>
+          <select class="rs-select" id="filterType">
+            <option value="">All Types</option>
+            <option value="resolutions">Resolutions only</option>
+            <option value="reports">Reports only</option>
+            <option value="treaties">Treaties only</option>
+          </select>
+          <button class="btn-primary" style="padding:8px 18px;font-size:13px;border-radius:var(--r-full);" onclick="doSearch()">Search</button>
+        </div>
+        <div class="quick-tags" id="quickTags"><span>Quick:</span></div>
+      </div>
+
+      <!-- UN LIBRARY BANNER — always visible -->
+      <div style="background:var(--amber-pale);border:1.5px solid var(--amber-soft);border-radius:var(--r-lg);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>
+          <p style="font-size:13px;font-weight:800;color:var(--text-primary);margin-bottom:2px;">📚 UN Digital Library</p>
+          <p style="font-size:12px;color:var(--text-secondary);font-weight:600;">Browse the official UN document database directly — all resolutions, reports and treaties.</p>
+        </div>
+        <a href="https://digitallibrary.un.org" target="_blank" class="btn-primary" style="font-size:12px;padding:8px 16px;border-radius:var(--r-full);white-space:nowrap;">Open UN Library →</a>
+      </div>
+
+      <div id="searchResults"></div>
+
+      <!-- TOOLS -->
+      <div id="toolsSection">
+        <h3 style="font-size:16px;font-weight:800;margin-bottom:14px;color:var(--text-primary);">Research Tools</h3>
+        <div class="research-tools-grid">
+          <div class="tool-card tc-violet" onclick="location.href='ai-chat.html'">
+            <div class="tool-icon">🤖</div>
+            <h4>AI Research Bot</h4>
+            <p>Ask anything — real answers powered by Groq AI. Full explanations, not one-liners.</p>
+            <span class="tool-tag tt-ai">Powered by Groq</span>
+          </div>
+          <div class="tool-card tc-cyan" onclick="showTool('poo')">
+            <div class="tool-icon">🏛️</div>
+            <h4>POO Guide</h4>
+            <p>Points of Order, procedure rules, and MUN floor vocabulary — quick reference.</p>
+            <span class="tool-tag tt-guide">Reference</span>
+          </div>
+          <div class="tool-card tc-pink" onclick="showTool('dirt')">
+            <div class="tool-icon">🕵️</div>
+            <h4>Dirt Finder</h4>
+            <p>AI finds real contradictions in any country's UN positions.</p>
+            <span class="tool-tag tt-ai">Powered by Groq</span>
+          </div>
+          <div class="tool-card tc-amber" onclick="showTool('paper')">
+            <div class="tool-icon">📄</div>
+            <h4>Position Paper Builder</h4>
+            <p>AI writes a proper position paper for your country and topic.</p>
+            <span class="tool-tag tt-ai">Powered by Groq</span>
+          </div>
+          <div class="tool-card tc-emerald" onclick="location.href='resolutions.html'">
+            <div class="tool-icon">📜</div>
+            <h4>Resolution Drafter</h4>
+            <p>Build clauses step by step with live preview and one-click copy.</p>
+            <span class="tool-tag tt-guide">Builder</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="toolPanel" style="display:none;"></div>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="doc-modal" id="docModal" style="display:none" onclick="if(event.target===this)closeModal()">
+    <div class="doc-modal-inner">
+      <div class="modal-header">
+        <div>
+          <span class="doc-type-badge" id="modalBadge">Document</span>
+          <h3 id="modalTitle"></h3>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="modalBody"></p>
+        <div id="modalYear" style="font-size:12px;color:var(--text-muted);font-weight:600;margin-top:8px;"></div>
+        <!-- UN Library verification link -->
+        <div style="margin-top:16px;padding:12px 16px;background:var(--amber-pale);border:1px solid var(--amber-soft);border-radius:var(--r-md);">
+          <p style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:6px;">📚 Verify on UN Digital Library</p>
+          <p style="font-size:11px;color:var(--text-secondary);font-weight:600;margin-bottom:8px;">Open the official UN database to find and read the full document:</p>
+          <a id="modalUnLink" href="#" target="_blank" class="btn-primary" style="font-size:12px;padding:7px 14px;border-radius:var(--r-full);">Find on UN Library →</a>
+        </div>
+      </div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn-primary" style="font-size:13px;padding:10px 18px;border-radius:var(--r-full);" onclick="copyModal()">📋 Copy Summary</button>
+        <button class="btn-glass" style="font-size:13px;padding:10px 18px;border-radius:var(--r-full);" onclick="askAIModal()">🤖 Ask AI about this</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script>
+    const GROQ_API_KEY = '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';
+    const GROQ_MODEL = 'llama-3.3-70b-versatile';
+    const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+    const firebaseConfig = {
+      apiKey:"AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",
+      authDomain:"delegate-iq-2025.firebaseapp.com",
+      projectId:"delegate-iq-2025",
+      storageBucket:"delegate-iq-2025.firebasestorage.app",
+      messagingSenderId:"612696020579",
+      appId:"1:612696020579:web:90255861a0d531f2580a56"
+    };
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    let munSetup={}, userProfile={};
+    try{munSetup=JSON.parse(localStorage.getItem('diq_setup')||'{}');}catch(e){}
+    try{userProfile=JSON.parse(localStorage.getItem('diq_profile')||'{}');}catch(e){}
+
+    auth.onAuthStateChanged(user=>{
+      if(!user){window.location.href='login.html';return;}
+      const name=userProfile.displayName||user.displayName||user.email.split('@')[0];
+      const initials=userProfile.initials||name.substring(0,2).toUpperCase();
+      document.getElementById('sidebarName').textContent=name;
+      document.getElementById('sidebarSchool').textContent=userProfile.school||'Member';
+      document.getElementById('sidebarAvatar').textContent=initials;
+      document.getElementById('headerAvatar').textContent=initials;
+
+      const tags=document.getElementById('quickTags');
+      [munSetup.topic, munSetup.country?munSetup.country+' policy':null, munSetup.committee?munSetup.committee+' resolutions':null,'human rights','climate change']
+        .filter(Boolean).slice(0,5).forEach(t=>{
+          const btn=document.createElement('button');
+          btn.className='q-tag'; btn.textContent=t;
+          btn.onclick=()=>{document.getElementById('researchInput').value=t;doSearch();};
+          tags.appendChild(btn);
+        });
+    });
+
+    // ─── MAIN SEARCH — Groq finds real UN documents + UN Library link ───
+    window.doSearch = async function() {
+      const q = document.getElementById('researchInput').value.trim();
+      const typeFilter = document.getElementById('filterType').value;
+      if(!q) return;
+
+      document.getElementById('toolsSection').style.display='none';
+      document.getElementById('toolPanel').style.display='none';
+      const r = document.getElementById('searchResults');
+      r.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-muted);font-weight:600;">🤖 AI is finding real UN documents on "${esc(q)}"...</div>`;
+
+      // Track research
+      try{
+        const p=JSON.parse(localStorage.getItem('diq_profile')||'{}');
+        p.researchCount=(p.researchCount||0)+1;
+        if(!p.badges)p.badges=['first_login'];
+        if(p.researchCount===1&&!p.badges.includes('first_research'))p.badges.push('first_research');
+        if(p.researchCount>=10&&!p.badges.includes('ten_research'))p.badges.push('ten_research');
+        localStorage.setItem('diq_profile',JSON.stringify(p));
+      }catch(e){}
+
+      const typeInstruction = typeFilter==='resolutions' ? 'Only include UN Resolutions (UNGA, UNSC, HRC etc).' :
+                              typeFilter==='reports' ? 'Only include UN Reports and Secretary-General reports.' :
+                              typeFilter==='treaties' ? 'Only include international Treaties, Conventions and Protocols.' :
+                              'Include a mix of resolutions, reports and treaties (at least one of each if possible).';
+
+      try {
+        const response = await fetch(GROQ_URL, {
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_API_KEY}`},
+          body:JSON.stringify({
+            model:GROQ_MODEL,
+            max_tokens:1500,
+            temperature:0.3,
+            messages:[
+              {role:'system',content:'You are a UN document expert. Always respond with valid JSON only, no markdown, no explanation.'},
+              {role:'user',content:`Find 4 real, specific UN documents about "${q}". ${typeInstruction}
+
+For each document provide EXACT real details:
+- Full official title
+- Document symbol/number (e.g. A/RES/70/1, S/RES/2254, A/HRC/49/36)
+- Type: "resolution", "report", or "treaty"  
+- Year adopted/published
+- Which UN body (UNGA, UNSC, HRC, UNHCR, etc)
+- 2-3 sentence description of what it covers and why it matters for MUN
+- UN Digital Library search URL: https://digitallibrary.un.org/search?p=SEARCHTERM where SEARCHTERM is the document number or key words
+
+Respond ONLY with this JSON array (no markdown, no backticks):
+[{"title":"...","symbol":"...","type":"resolution","year":"...","body":"...","unlib_url":"...","un_body":"..."}]`}
+            ]
+          })
+        });
+
+        const data = await response.json();
+        if(data.error) throw new Error(data.error.message);
+
+        let text = data.choices[0].message.content.trim();
+        // Clean up any markdown
+        text = text.replace(/```json|```/g,'').trim();
+        const results = JSON.parse(text);
+        renderResults(results, q);
+
+      } catch(err) {
+        console.error(err);
+        r.innerHTML=`
+          <div style="background:var(--terra-pale);border:1.5px solid rgba(194,98,63,0.3);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;">
+            <p style="font-weight:700;color:var(--terracotta);margin-bottom:8px;">⚠️ Could not load results</p>
+            <p style="font-size:13px;color:var(--text-secondary);font-weight:600;margin-bottom:12px;">Please check your internet connection. You can also search directly on UN Digital Library:</p>
+            <a href="https://digitallibrary.un.org/search?p=${encodeURIComponent(q)}&action_search=Search" target="_blank" class="btn-primary" style="font-size:13px;border-radius:var(--r-full);">Search "${esc(q)}" on UN Library →</a>
+          </div>
+          <button class="btn-ghost-sm" onclick="document.getElementById('searchResults').innerHTML='';document.getElementById('toolsSection').style.display='block'">← Back</button>`;
+      }
+    };
+
+    function renderResults(results, query) {
+      const r = document.getElementById('searchResults');
+      if(!results||!results.length){
+        r.innerHTML=`<p style="color:var(--text-muted);font-weight:600;">No results found. Try a different search term.</p>`;
+        return;
+      }
+
+      r.innerHTML=`
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <h3 style="font-size:16px;font-weight:800;color:var(--text-primary);">${results.length} documents found for "${esc(query)}"</h3>
+          <button class="btn-ghost-sm" onclick="document.getElementById('searchResults').innerHTML='';document.getElementById('toolsSection').style.display='block'">✕ Clear</button>
+        </div>
+
+        <!-- AI disclaimer + UN Library link -->
+        <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <p style="font-size:12px;color:var(--text-muted);font-weight:600;">🤖 Summaries provided by Groq AI · 📚 Click "Find on UN Library" to read the full official document</p>
+          <a href="https://digitallibrary.un.org/search?p=${encodeURIComponent(query)}&action_search=Search" target="_blank" style="font-size:12px;color:var(--amber);font-weight:700;white-space:nowrap;">Browse all on UN Library →</a>
+        </div>
+
+        ${results.map(d=>`
+          <div style="background:white;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:12px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+              <span class="doc-type-badge ${d.type==='resolution'?'dt-res':'d.type==='treaty'?'dt-res':'dt-rep'}">${d.type==='resolution'?'Resolution':d.type==='treaty'?'Treaty':'Report'}</span>
+              ${d.symbol?`<span style="font-size:11px;font-weight:800;color:var(--amber);background:var(--amber-pale);padding:2px 8px;border-radius:100px;">${esc(d.symbol)}</span>`:''}
+              ${d.year?`<span style="font-size:11px;color:var(--text-muted);font-weight:600;">📅 ${d.year}</span>`:''}
+              ${d.un_body?`<span style="font-size:11px;color:var(--text-muted);font-weight:600;">🏛️ ${esc(d.un_body)}</span>`:''}
+            </div>
+            <h4 style="font-size:14px;font-weight:800;color:var(--text-primary);margin-bottom:8px;">${esc(d.title)}</h4>
+            <p style="font-size:13px;color:var(--text-secondary);font-weight:600;line-height:1.6;margin-bottom:14px;">${esc(d.body||'')}</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <button class="btn-ghost-sm" onclick="copyDocText('${esc(d.symbol||d.title)}','${esc(d.title)}','${esc(d.body||'')}',this)">📋 Copy</button>
+              <a href="${esc(d.unlib_url||'https://digitallibrary.un.org/search?p='+encodeURIComponent(d.symbol||d.title))}" target="_blank" class="btn-ghost-sm" style="text-decoration:none;color:var(--amber);border-color:var(--amber-soft);background:var(--amber-pale);">📚 Find on UN Library</a>
+              <button class="btn-ghost-sm" onclick="openModal('${esc(d.title)}','${d.type}','${esc(d.body||'')}','${d.year||''}','${esc(d.unlib_url||'https://digitallibrary.un.org/search?p='+encodeURIComponent(d.symbol||d.title))}','${esc(d.symbol||'')}')">🔍 Full details</button>
+              <button class="btn-ghost-sm" onclick="askAIAboutDoc('${esc(d.title+' '+d.symbol)}')">🤖 Ask AI</button>
+            </div>
+          </div>`).join('')}
+
+        <div style="margin-top:16px;padding:16px;background:var(--amber-pale);border:1.5px solid var(--amber-soft);border-radius:var(--r-lg);text-align:center;">
+          <p style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:8px;">📚 Want to read the full official documents?</p>
+          <p style="font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:12px;">The UN Digital Library has every resolution, report and treaty ever published by the United Nations.</p>
+          <a href="https://digitallibrary.un.org/search?p=${encodeURIComponent(query)}&action_search=Search" target="_blank" class="btn-primary" style="font-size:13px;border-radius:var(--r-full);">🔗 Open UN Digital Library for "${esc(query)}" →</a>
+        </div>`;
+    }
+
+    // ─── MODAL ───
+    window.openModal = function(title,type,body,year,link,symbol) {
+      document.getElementById('modalTitle').textContent=title;
+      document.getElementById('modalBody').textContent=body;
+      document.getElementById('modalBadge').textContent=type==='resolution'?'Resolution':type==='treaty'?'Treaty':'Report';
+      document.getElementById('modalBadge').className='doc-type-badge '+(type==='resolution'||type==='treaty'?'dt-res':'dt-rep');
+      document.getElementById('modalYear').textContent=symbol?(symbol+(year?' · '+year:'')):(year?'📅 '+year:'');
+      document.getElementById('modalUnLink').href=link||'https://digitallibrary.un.org';
+      document.getElementById('docModal').style.display='flex';
+    };
+    window.closeModal=()=>document.getElementById('docModal').style.display='none';
+    window.copyModal=function(){
+      const t=document.getElementById('modalTitle').textContent+'\n'+document.getElementById('modalYear').textContent+'\n\n'+document.getElementById('modalBody').textContent;
+      navigator.clipboard.writeText(t);
+      event.target.textContent='✅ Copied!';
+      setTimeout(()=>event.target.textContent='📋 Copy Summary',2000);
+    };
+    window.askAIModal=function(){
+      askAIAboutDoc(document.getElementById('modalTitle').textContent+' '+document.getElementById('modalYear').textContent);
+      closeModal();
+    };
+    window.askAIAboutDoc=function(title){
+      localStorage.setItem('diq_ai_prefill',`Tell me about this UN document and its significance for MUN delegates: ${title}`);
+      window.location.href='ai-chat.html';
+    };
+    window.copyDocText=function(symbol,title,body,btn){
+      navigator.clipboard.writeText((symbol?symbol+'\n':'')+title+'\n\n'+body);
+      btn.textContent='✅ Copied!';
+      setTimeout(()=>btn.textContent='📋 Copy',2000);
+    };
+
+    // ─── TOOL PANELS ───
+    const pooHTML=`
+      <h3 style="margin-bottom:16px;font-size:18px;font-weight:900;color:var(--text-primary);">🏛️ Point of Order Guide</h3>
+      <div class="feat-list">
+        <div class="feat-item"><div class="feat-icon">🔴</div><div><h4>Point of Order</h4><p>Raised when procedure is violated. Chair must recognize immediately. Cannot comment on substance.</p></div></div>
+        <div class="feat-item"><div class="feat-icon">🟡</div><div><h4>Point of Parliamentary Inquiry</h4><p>Ask Chair to clarify a procedural rule. Not for substantive questions.</p></div></div>
+        <div class="feat-item"><div class="feat-icon">🟢</div><div><h4>Point of Personal Privilege</h4><p>When your ability to participate is impaired. Use sparingly.</p></div></div>
+        <div class="feat-item"><div class="feat-icon">🔵</div><div><h4>Moderated Caucus</h4><p>Structured debate. State: total time, speaking time, purpose.</p></div></div>
+        <div class="feat-item"><div class="feat-icon">⚪</div><div><h4>Unmoderated Caucus</h4><p>Free networking for bloc building. State total time.</p></div></div>
+        <div class="feat-item"><div class="feat-icon">🟠</div><div><h4>Motion to Close Debate</h4><p>Ends discussion, moves to voting. Needs 2/3 majority.</p></div></div>
+      </div>
+      <button class="btn-glass" style="margin-top:20px;font-size:13px;border-radius:var(--r-full);" onclick="closeTool()">← Back</button>`;
+
+    window.showTool=function(tool){
+      document.getElementById('toolsSection').style.display='none';
+      document.getElementById('searchResults').innerHTML='';
+      const panel=document.getElementById('toolPanel');
+      panel.style.display='block';
+      if(tool==='poo'){panel.innerHTML=pooHTML;return;}
+      if(tool==='dirt'){showDirt();return;}
+      if(tool==='paper'){showPaper();return;}
+    };
+    window.closeTool=function(){
+      document.getElementById('toolPanel').style.display='none';
+      document.getElementById('toolsSection').style.display='block';
+    };
+
+    function showDirt(){
+      document.getElementById('toolPanel').innerHTML=`
+        <h3 style="margin-bottom:8px;font-size:18px;font-weight:900;color:var(--text-primary);">🕵️ Dirt Finder</h3>
+        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;font-weight:600;">Enter a country — AI finds real contradictions in their UN positions using Groq AI.</p>
+        <div style="display:flex;gap:10px;margin-bottom:20px;">
+          <input type="text" id="dirtInput" placeholder="e.g. USA, Russia, China, India, Canada..." style="flex:1;padding:12px 14px;background:var(--bg-soft);border:1.5px solid var(--border);border-radius:var(--r-md);font-size:14px;color:var(--text-primary);font-family:'Nunito',sans-serif;outline:none;"/>
+          <button class="btn-primary" style="font-size:13px;padding:12px 20px;border-radius:var(--r-full);" onclick="runDirt()">Find →</button>
+        </div>
+        <div id="dirtResults"></div>
+        <button class="btn-glass" style="margin-top:20px;font-size:13px;border-radius:var(--r-full);" onclick="closeTool()">← Back</button>`;
+    }
+
+    window.runDirt=async function(){
+      const country=document.getElementById('dirtInput').value.trim();
+      if(!country)return;
+      const el=document.getElementById('dirtResults');
+      el.innerHTML=`<div style="color:var(--text-muted);padding:16px 0;font-weight:600;">🤖 Groq AI is analysing ${esc(country)}'s UN positions...</div>`;
+      try{
+        const topic=munSetup.topic||'';
+        const resp=await fetch(GROQ_URL,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_API_KEY}`},
+          body:JSON.stringify({
+            model:GROQ_MODEL,max_tokens:800,temperature:0.4,
+            messages:[
+              {role:'system',content:'You are a MUN debate strategist. Respond with valid JSON only.'},
+              {role:'user',content:`Find 4 real, specific contradictions or weaknesses in ${country}'s UN positions${topic?' regarding '+topic:''}. 
+Each must be based on actual documented facts, voting records, or policy contradictions.
+Respond ONLY with JSON (no backticks): [{"argument":"...","evidence":"...","how_to_use":"..."}]`}
+            ]
+          })
+        });
+        const data=await resp.json();
+        if(data.error)throw new Error(data.error.message);
+        let text=data.choices[0].message.content.trim().replace(/\`\`\`json|\`\`\`/g,'').trim();
+        const results=JSON.parse(text);
+        el.innerHTML=`<h4 style="font-size:14px;font-weight:800;margin-bottom:12px;color:var(--terracotta);">⚠️ ${results.length} contradictions found for ${esc(country)}</h4>
+          <div class="feat-list">${results.map(r=>`
+            <div class="feat-item" style="padding:14px;">
+              <div class="feat-icon">🎯</div>
+              <div>
+                <p style="font-size:13px;font-weight:800;color:var(--text-primary);margin-bottom:4px;">${esc(r.argument)}</p>
+                <p style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:4px;"><strong>Evidence:</strong> ${esc(r.evidence||'')}</p>
+                <p style="font-size:12px;color:var(--sage);font-weight:600;margin-bottom:8px;"><strong>How to use:</strong> ${esc(r.how_to_use||'')}</p>
+                <button class="btn-ghost-sm" onclick="copyBtn('${esc(r.argument+'. '+r.evidence)}',this)">📋 Copy argument</button>
+              </div>
+            </div>`).join('')}</div>`;
+      }catch(err){
+        el.innerHTML=`<p style="color:var(--terracotta);font-weight:600;">Could not connect. Check your internet and try again.</p>`;
+      }
+    };
+
+    function showPaper(){
+      document.getElementById('toolPanel').innerHTML=`
+        <h3 style="margin-bottom:8px;font-size:18px;font-weight:900;color:var(--text-primary);">📄 Position Paper Builder</h3>
+        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;font-weight:600;">Groq AI writes a proper position paper based on real country policy.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;">
+          <div class="form-group"><label>Your Country</label><input type="text" id="ppC" value="${esc(munSetup.country||'')}" placeholder="e.g. Canada"/></div>
+          <div class="form-group"><label>Committee</label><input type="text" id="ppCom" value="${esc(munSetup.committee||'')}" placeholder="e.g. UNODC"/></div>
+          <div class="form-group"><label>Agenda Topic</label><input type="text" id="ppT" value="${esc(munSetup.topic||'')}" placeholder="e.g. Human Trafficking"/></div>
+          <button class="btn-primary" style="font-size:13px;padding:12px 20px;width:fit-content;border-radius:var(--r-full);" onclick="genPaper()">Generate →</button>
+        </div>
+        <div id="paperOut"></div>
+        <button class="btn-glass" style="margin-top:20px;font-size:13px;border-radius:var(--r-full);" onclick="closeTool()">← Back</button>`;
+    }
+
+    window.genPaper=async function(){
+      const c=document.getElementById('ppC').value.trim()||'Your Country';
+      const com=document.getElementById('ppCom').value.trim()||'Committee';
+      const t=document.getElementById('ppT').value.trim()||'Agenda Topic';
+      const out=document.getElementById('paperOut');
+      out.innerHTML='<div style="color:var(--text-muted);padding:16px 0;font-weight:600;">🤖 Groq AI is writing your position paper...</div>';
+      try{
+        const resp=await fetch(GROQ_URL,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_API_KEY}`},
+          body:JSON.stringify({
+            model:GROQ_MODEL,max_tokens:1200,temperature:0.6,
+            messages:[
+              {role:'system',content:'You are an expert MUN position paper writer.'},
+              {role:'user',content:`Write a formal MUN position paper for:
+Country: ${c} | Committee: ${com} | Topic: ${t}
+
+Use these exact sections:
+I. INTRODUCTION
+II. COUNTRY'S POSITION  
+III. KEY ARGUMENTS (cite real UN resolutions with numbers)
+IV. PROPOSED SOLUTIONS
+V. CONCLUSION
+
+Write 350-400 words. Base it on ${c}'s real foreign policy. Use formal diplomatic language. Cite real UN resolution numbers where relevant.`}
+            ]
+          })
+        });
+        const data=await resp.json();
+        if(data.error)throw new Error(data.error.message);
+        const paper=data.choices[0].message.content;
+        // Award badge
+        try{
+          const p=JSON.parse(localStorage.getItem('diq_profile')||'{}');
+          if(!p.badges)p.badges=['first_login'];
+          if(!p.badges.includes('paper_writer'))p.badges.push('paper_writer');
+          localStorage.setItem('diq_profile',JSON.stringify(p));
+        }catch(e){}
+        out.innerHTML=`
+          <div style="background:var(--bg-soft);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-top:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+              <h4 style="font-size:14px;font-weight:800;color:var(--text-primary);">Position Paper — ${esc(c)}</h4>
+              <button class="btn-ghost-sm" onclick="copyBtn(this.closest('div').querySelector('pre').textContent,this)">📋 Copy Full Paper</button>
+            </div>
+            <pre style="font-size:12px;color:var(--text-secondary);line-height:1.8;white-space:pre-wrap;font-family:'Nunito',sans-serif;font-weight:600;">${esc(paper)}</pre>
+          </div>`;
+      }catch(err){
+        out.innerHTML=`<p style="color:var(--terracotta);font-weight:600;">Could not connect. Check your internet.</p>`;
+      }
+    };
+
+    window.copyBtn=function(text,btn){
+      navigator.clipboard.writeText(text);
+      const orig=btn.textContent;
+      btn.textContent='✅ Copied!';
+      setTimeout(()=>btn.textContent=orig,2000);
+    };
+
+    document.getElementById('logoutBtn').addEventListener('click',async()=>{
+      await auth.signOut();
+      localStorage.removeItem('diq_profile');
+      localStorage.removeItem('diq_setup');
+      window.location.href='../index.html';
+    });
+    document.addEventListener('click',e=>{
+      const sb=document.getElementById('sidebar');
+      const tg=document.querySelector('.sidebar-toggle');
+      if(sb.classList.contains('open')&&!sb.contains(e.target)&&!tg?.contains(e.target))sb.classList.remove('open');
+    });
+    function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+  </script>
+</body>
+</html>
