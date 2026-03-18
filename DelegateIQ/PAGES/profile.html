@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="../css/style.css"/>
 </head>
 <body class="app-page">
-
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo"><div class="logo-mark">D</div><span class="logo-text">DelegateIQ</span></div>
     <nav class="sidebar-nav">
@@ -15,15 +14,19 @@
       <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Dashboard</span></a>
       <a href="ai-chat.html" class="nav-item"><span class="nav-icon">🤖</span><span>AI Assistant</span></a>
       <a href="research.html" class="nav-item"><span class="nav-icon">🔍</span><span>Research</span></a>
-      <a href="#" class="nav-item"><span class="nav-icon">📜</span><span>Resolutions</span></a>
+      <a href="resolutions.html" class="nav-item"><span class="nav-icon">📜</span><span>Resolutions</span></a>
+      <div class="nav-section-label">Community</div>
+      <a href="network.html" class="nav-item"><span class="nav-icon">👥</span><span>Network</span></a>
+      <a href="chats.html" class="nav-item"><span class="nav-icon">💬</span><span>Chats</span></a>
       <div class="nav-section-label">You</div>
       <a href="profile.html" class="nav-item active"><span class="nav-icon">👤</span><span>Profile</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">🏅</span><span>Badges</span></a>
     </nav>
     <div class="sidebar-bottom">
       <div class="sidebar-user" onclick="location.href='profile.html'">
         <div class="avatar-btn" id="sidebarAvatar">?</div>
         <div>
-          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+          <div class="sidebar-user-name" id="sidebarName">You</div>
           <div class="sidebar-user-role" id="sidebarSchool">Member</div>
         </div>
       </div>
@@ -41,11 +44,10 @@
     </header>
 
     <div class="profile-body">
-
       <div class="profile-hero">
         <div class="profile-avatar-lg" id="profileAvatar">?</div>
         <div class="profile-details">
-          <div class="profile-name" id="profileName">Loading...</div>
+          <div class="profile-name" id="profileName">Your Name</div>
           <div class="profile-school" id="profileSchool">📚 DelegateIQ Member</div>
           <div class="profile-bio">Passionate MUN delegate. Building my career one committee at a time.</div>
           <div class="profile-tags">
@@ -66,199 +68,169 @@
         <button class="ptab" onclick="switchTab('history',this)">📅 History</button>
       </div>
 
-      <!-- BADGES -->
       <div id="tab-badges">
         <div class="badges-grid" id="badgesGrid"></div>
         <div style="margin-top:16px;padding:16px;background:white;border:1.5px solid var(--border);border-radius:var(--r-lg);">
-          <h4 style="font-size:14px;font-weight:800;margin-bottom:12px;color:var(--text-primary);">How to earn more badges</h4>
+          <h4 style="font-size:14px;font-weight:800;margin-bottom:12px;">How to earn more badges</h4>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
-            <div style="font-size:13px;color:var(--text-secondary);font-weight:600;">📅 Add a conference → <strong style="color:var(--amber);">Delegate</strong></div>
-            <div style="font-size:13px;color:var(--text-secondary);font-weight:600;">🤖 Use AI Assistant → <strong style="color:var(--amber);">Researcher</strong></div>
-            <div style="font-size:13px;color:var(--text-secondary);font-weight:600;">🏆 Log an award → <strong style="color:var(--amber);">Award Winner</strong></div>
+            <div style="font-size:13px;color:var(--text-secondary);font-weight:600;">📅 Add conference → <strong style="color:var(--amber);">Delegate</strong></div>
+            <div style="font-size:13px;color:var(--text-secondary);font-weight:600;">🤖 Use AI → <strong style="color:var(--amber);">Researcher</strong></div>
+            <div style="font-size:13px;color:var(--text-secondary);font-weight:600;">🏆 Log award → <strong style="color:var(--amber);">Award Winner</strong></div>
             <div style="font-size:13px;color:var(--text-secondary);font-weight:600;">⭐ 5 conferences → <strong style="color:var(--amber);">Seasoned</strong></div>
           </div>
         </div>
       </div>
 
-      <!-- AWARDS -->
       <div id="tab-awards" style="display:none;">
         <div class="awards-grid" id="awardsGrid">
-          <div style="color:var(--text-muted);font-size:14px;padding:20px;font-weight:600;">No awards added yet. Add a conference with an award to get started!</div>
+          <div style="color:var(--text-muted);font-size:14px;padding:20px;font-weight:600;">No awards yet!</div>
         </div>
         <button class="btn-ghost-sm" style="margin-top:14px;" onclick="addConferenceFlow()">+ Add Award</button>
       </div>
 
-      <!-- HISTORY -->
       <div id="tab-history" style="display:none;">
         <div class="history-list" id="historyList">
-          <div style="color:var(--text-muted);font-size:14px;padding:20px;font-weight:600;">No conferences added yet. Click below to add your first!</div>
+          <div style="color:var(--text-muted);font-size:14px;padding:20px;font-weight:600;">No conferences yet!</div>
         </div>
         <button class="btn-ghost-sm" style="margin-top:14px;" onclick="addConferenceFlow()">+ Add Conference</button>
       </div>
-
     </div>
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",
-      authDomain: "delegate-iq-2025.firebaseapp.com",
-      projectId: "delegate-iq-2025",
-      storageBucket: "delegate-iq-2025.firebasestorage.app",
-      messagingSenderId: "612696020579",
-      appId: "1:612696020579:web:90255861a0d531f2580a56"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const fc={apiKey:"AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",authDomain:"delegate-iq-2025.firebaseapp.com",projectId:"delegate-iq-2025",storageBucket:"delegate-iq-2025.firebasestorage.app",messagingSenderId:"612696020579",appId:"1:612696020579:web:90255861a0d531f2580a56"};
+    if(!firebase.apps.length) firebase.initializeApp(fc);
 
-    const BADGES = {
-      first_login:      { icon: "🚀", name: "First Step",     desc: "Joined DelegateIQ" },
-      first_conference: { icon: "🏛️", name: "Delegate",       desc: "Attended first conference" },
-      five_conferences: { icon: "⭐", name: "Seasoned",        desc: "Attended 5 conferences" },
-      first_research:   { icon: "🔍", name: "Researcher",      desc: "First research session" },
-      ten_research:     { icon: "🎓", name: "Scholar",         desc: "10 research sessions" },
-      first_award:      { icon: "🏆", name: "Award Winner",    desc: "Won first MUN award" },
-      resolution_draft: { icon: "📜", name: "Drafter",         desc: "Drafted a resolution" },
-      committee_join:   { icon: "👥", name: "Committee Member",desc: "Joined a committee" },
+    const BADGES={
+      first_login:{icon:"🚀",name:"First Step",desc:"Joined DelegateIQ"},
+      first_conference:{icon:"🏛️",name:"Delegate",desc:"First conference"},
+      five_conferences:{icon:"⭐",name:"Seasoned",desc:"5 conferences"},
+      first_research:{icon:"🔍",name:"Researcher",desc:"First research"},
+      ten_research:{icon:"🎓",name:"Scholar",desc:"10 research sessions"},
+      first_award:{icon:"🏆",name:"Award Winner",desc:"First award"},
+      resolution_draft:{icon:"📜",name:"Drafter",desc:"Drafted a resolution"},
+      committee_join:{icon:"👥",name:"Committee Member",desc:"Joined a committee"},
+      paper_writer:{icon:"📄",name:"Paper Writer",desc:"Built a position paper"}
     };
 
-    function getProfile() {
-      try { return JSON.parse(localStorage.getItem('diq_profile') || '{}'); } catch(e) { return {}; }
-    }
-    function saveProfile(p) { localStorage.setItem('diq_profile', JSON.stringify(p)); }
-    function getSetup() {
-      try { return JSON.parse(localStorage.getItem('diq_setup') || '{}'); } catch(e) { return {}; }
-    }
+    function getProfile(){try{return JSON.parse(localStorage.getItem('diq_profile')||'{}');}catch(e){return{};}}
+    function getSetup(){try{return JSON.parse(localStorage.getItem('diq_setup')||'{}');}catch(e){return{};}}
 
-    auth.onAuthStateChanged(user => {
-      if (!user) { window.location.href = 'login.html'; return; }
+    // Load from localStorage IMMEDIATELY — no waiting for Firebase
+    const profile = getProfile();
+    const setup = getSetup();
 
-      const profile = getProfile();
-      const setup = getSetup();
-
-      // Use real name from Firebase Auth or localStorage
-      const displayName = profile.displayName || user.displayName || user.email.split('@')[0];
-      const firstName = profile.firstName || displayName.split(' ')[0];
-      const initials = profile.initials || displayName.substring(0,2).toUpperCase();
-      const school = profile.school || 'DelegateIQ Member';
-      const badges = profile.badges || ['first_login'];
-      const conferences = profile.conferences || [];
-      const researchCount = profile.researchCount || 0;
-
-      // Populate UI
-      document.getElementById('sidebarName').textContent = displayName;
-      document.getElementById('sidebarSchool').textContent = school;
+    // Set name instantly from localStorage
+    if(profile.displayName){
+      const initials = profile.initials || profile.displayName.substring(0,2).toUpperCase();
       document.getElementById('sidebarAvatar').textContent = initials;
       document.getElementById('headerAvatar').textContent = initials;
+      document.getElementById('sidebarName').textContent = profile.displayName;
+      document.getElementById('sidebarSchool').textContent = profile.school || 'Member';
       document.getElementById('profileAvatar').textContent = initials;
-      document.getElementById('profileName').textContent = displayName;
-      document.getElementById('profileSchool').textContent = '📚 ' + school;
+      document.getElementById('profileName').textContent = profile.displayName;
+      document.getElementById('profileSchool').textContent = '📚 ' + (profile.school || 'DelegateIQ Member');
+    }
+    if(setup.committee) document.getElementById('tagCommittee').textContent = setup.committee;
+    if(setup.country) document.getElementById('tagCountry').textContent = '🌍 ' + setup.country;
 
-      // Tags from setup
-      if (setup.committee) document.getElementById('tagCommittee').textContent = setup.committee;
-      if (setup.country) document.getElementById('tagCountry').textContent = '🌍 ' + setup.country;
+    const badges = profile.badges || ['first_login'];
+    const conferences = profile.conferences || [];
+    const researchCount = profile.researchCount || 0;
 
-      // Stats
-      document.getElementById('psConferences').textContent = conferences.length;
-      document.getElementById('psBadges').textContent = badges.length;
-      document.getElementById('psResearch').textContent = researchCount;
+    document.getElementById('psConferences').textContent = conferences.length;
+    document.getElementById('psBadges').textContent = badges.length;
+    document.getElementById('psResearch').textContent = researchCount;
 
-      // Render badges
-      renderBadges(badges);
+    renderBadges(badges);
+    renderHistory(conferences);
+    renderAwards(conferences);
 
-      // Render conferences
-      renderHistory(conferences);
-      renderAwards(conferences);
+    // Then Firebase auth for security check
+    firebase.auth().onAuthStateChanged(user=>{
+      if(!user){window.location.href='login.html';return;}
+      // Update with Firebase display name if localStorage doesn't have it
+      if(!profile.displayName && user.displayName){
+        const name = user.displayName;
+        const initials = name.substring(0,2).toUpperCase();
+        document.getElementById('sidebarAvatar').textContent = initials;
+        document.getElementById('headerAvatar').textContent = initials;
+        document.getElementById('sidebarName').textContent = name;
+        document.getElementById('profileAvatar').textContent = initials;
+        document.getElementById('profileName').textContent = name;
+      }
     });
 
-    function renderBadges(earnedBadges) {
-      const grid = document.getElementById('badgesGrid');
-      grid.innerHTML = Object.entries(BADGES).map(([id, b]) => {
-        const earned = earnedBadges.includes(id);
-        return `
-          <div class="badge-card ${earned ? 'earned' : 'locked'}">
-            ${!earned ? '<div class="badge-lock">🔒</div>' : ''}
-            <div class="badge-emoji-lg">${b.icon}</div>
-            <div class="badge-card-name">${b.name}</div>
-            <div class="badge-card-desc">${b.desc}</div>
-          </div>`;
+    function renderBadges(earned){
+      document.getElementById('badgesGrid').innerHTML = Object.entries(BADGES).map(([id,b])=>{
+        const e = earned.includes(id);
+        return `<div class="badge-card ${e?'earned':'locked'}">
+          ${!e?'<div class="badge-lock">🔒</div>':''}
+          <div class="badge-emoji-lg">${b.icon}</div>
+          <div class="badge-card-name">${b.name}</div>
+          <div class="badge-card-desc">${b.desc}</div>
+        </div>`;
       }).join('');
     }
 
-    function renderHistory(conferences) {
-      const list = document.getElementById('historyList');
-      if (!conferences.length) return;
-      list.innerHTML = conferences.slice().reverse().map(c => `
+    function renderHistory(confs){
+      if(!confs.length) return;
+      document.getElementById('historyList').innerHTML = confs.slice().reverse().map(c=>`
         <div class="hist-item">
-          <div class="hist-date">${c.date ? new Date(c.date).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) : 'Recent'}</div>
+          <div class="hist-date">${c.date?new Date(c.date).toLocaleDateString('en-IN',{month:'short',year:'numeric'}):'Recent'}</div>
           <div class="hist-info">
             <h4>${c.name}</h4>
-            <p>${c.committee || ''} ${c.country ? '· 🌍 ' + c.country : ''}</p>
-            ${c.award ? '<span class="badge-chip chip-violet">🏆 Award</span>' : ''}
+            <p>${c.committee||''} ${c.country?'· 🌍 '+c.country:''}</p>
+            ${c.award?'<span class="badge-chip chip-violet">🏆 Award</span>':''}
           </div>
         </div>`).join('');
     }
 
-    function renderAwards(conferences) {
-      const awarded = conferences.filter(c => c.award);
-      if (!awarded.length) return;
-      const grid = document.getElementById('awardsGrid');
-      grid.innerHTML = awarded.map((c, i) => `
-        <div class="award-card ${i === 0 ? 'gold' : i === 1 ? 'silver' : 'bronze'}">
-          <div class="award-medal">${i === 0 ? '🥇' : i === 1 ? '🥈' : '🏅'}</div>
-          <div class="award-info">
-            <h4>${c.awardName || 'Award'}</h4>
-            <p>${c.name} · ${c.committee || ''}</p>
-          </div>
+    function renderAwards(confs){
+      const awarded = confs.filter(c=>c.award);
+      if(!awarded.length) return;
+      document.getElementById('awardsGrid').innerHTML = awarded.map((c,i)=>`
+        <div class="award-card ${i===0?'gold':i===1?'silver':'bronze'}">
+          <div class="award-medal">${i===0?'🥇':i===1?'🥈':'🏅'}</div>
+          <div class="award-info"><h4>${c.awardName||'Award'}</h4><p>${c.name} · ${c.committee||''}</p></div>
         </div>`).join('');
     }
 
-    window.addConferenceFlow = function() {
-      const name = prompt('Conference name (e.g. DELMUN 2025):');
-      if (!name) return;
-      const committee = prompt('Committee (e.g. UNSC, UNGA, WHO...):') || '';
-      const country = prompt('Country you represented:') || '';
-      const award = confirm('Did you win an award at this conference?');
-      const awardName = award ? (prompt('Award name (e.g. Best Delegate):') || 'Award') : '';
-
-      const profile = getProfile();
-      const conferences = profile.conferences || [];
-      conferences.push({ name, committee, country, award, awardName, date: new Date().toISOString() });
-      profile.conferences = conferences;
-
-      // Update badges
-      if (!profile.badges) profile.badges = ['first_login'];
-      if (conferences.length === 1 && !profile.badges.includes('first_conference')) profile.badges.push('first_conference');
-      if (conferences.length >= 5 && !profile.badges.includes('five_conferences')) profile.badges.push('five_conferences');
-      if (award && !profile.badges.includes('first_award')) profile.badges.push('first_award');
-
-      saveProfile(profile);
-      alert('Conference added! ✅');
+    window.addConferenceFlow=function(){
+      const name=prompt('Conference name:'); if(!name) return;
+      const committee=prompt('Committee:')||'';
+      const country=prompt('Country represented:')||'';
+      const award=confirm('Did you win an award?');
+      const awardName=award?(prompt('Award name:')||'Award'):'';
+      const p=getProfile();
+      if(!p.conferences) p.conferences=[];
+      p.conferences.push({name,committee,country,award,awardName,date:new Date().toISOString()});
+      if(!p.badges) p.badges=['first_login'];
+      if(p.conferences.length===1&&!p.badges.includes('first_conference')) p.badges.push('first_conference');
+      if(p.conferences.length>=5&&!p.badges.includes('five_conferences')) p.badges.push('five_conferences');
+      if(award&&!p.badges.includes('first_award')) p.badges.push('first_award');
+      localStorage.setItem('diq_profile',JSON.stringify(p));
       location.reload();
     };
 
-    window.switchTab = function(name, btn) {
-      document.querySelectorAll('[id^="tab-"]').forEach(e => e.style.display = 'none');
-      document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-' + name).style.display = 'block';
+    window.switchTab=function(name,btn){
+      document.querySelectorAll('[id^="tab-"]').forEach(e=>e.style.display='none');
+      document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+      document.getElementById('tab-'+name).style.display='block';
       btn.classList.add('active');
     };
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await auth.signOut();
-      localStorage.removeItem('diq_profile');
-      localStorage.removeItem('diq_setup');
-      window.location.href = '../index.html';
+    document.getElementById('logoutBtn').addEventListener('click',async()=>{
+      await firebase.auth().signOut();
+      localStorage.removeItem('diq_profile');localStorage.removeItem('diq_setup');
+      window.location.href='../index.html';
     });
 
-    document.addEventListener('click', e => {
-      const sidebar = document.getElementById('sidebar');
-      const toggle = document.querySelector('.sidebar-toggle');
-      if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle?.contains(e.target)) {
-        sidebar.classList.remove('open');
-      }
+    document.addEventListener('click',e=>{
+      const sb=document.getElementById('sidebar'),tg=document.querySelector('.sidebar-toggle');
+      if(sb.classList.contains('open')&&!sb.contains(e.target)&&!tg?.contains(e.target)) sb.classList.remove('open');
     });
   </script>
 </body>
