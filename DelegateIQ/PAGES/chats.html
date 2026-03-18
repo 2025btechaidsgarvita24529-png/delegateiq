@@ -73,6 +73,21 @@
   <script>
     const fc = {apiKey:"AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",authDomain:"delegate-iq-2025.firebaseapp.com",projectId:"delegate-iq-2025",storageBucket:"delegate-iq-2025.firebasestorage.app",messagingSenderId:"612696020579",appId:"1:612696020579:web:90255861a0d531f2580a56"};
     if(!firebase.apps.length) firebase.initializeApp(fc);
+    // Load sidebar INSTANTLY from localStorage — no waiting
+    (function(){
+      var p={};try{p=JSON.parse(localStorage.getItem('diq_profile')||'{}');}catch(e){}
+      if(p.displayName){
+        var i=p.initials||p.displayName.substring(0,2).toUpperCase();
+        var a=document.getElementById('sidebarAvatar');
+        var n=document.getElementById('sidebarName');
+        var s=document.getElementById('sidebarSchool');
+        var h=document.getElementById('headerAvatar');
+        if(a) a.textContent=i;
+        if(n) n.textContent=p.displayName;
+        if(s) s.textContent=p.school||'Member';
+        if(h) h.textContent=i;
+      }
+    })();
 
     let currentUser = null;
     let currentRoom = null;
@@ -186,3 +201,5 @@
   </script>
 </body>
 </html>
+
+        
