@@ -10,6 +10,9 @@
     .form-row-2 .form-group{min-width:0}
     .form-row-2 input{width:100%;min-width:0;box-sizing:border-box}
     .auth-card{overflow:hidden}
+    .btn-loading{opacity:0.7;cursor:not-allowed;pointer-events:none}
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:6px;vertical-align:middle}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body class="auth-page">
@@ -26,36 +29,39 @@
       <h2 class="auth-title">Join DelegateIQ ✦</h2>
       <p class="auth-sub">Free forever — no credit card required</p>
       <div class="auth-error" id="authError"></div>
+      <div id="authSuccess" style="background:#F0FDF4;border:1px solid #86EFAC;color:#166534;padding:10px 14px;border-radius:var(--r-md);font-size:13px;font-weight:600;display:none;">
+        ✅ Account created! Redirecting...
+      </div>
       <form class="auth-form" id="signupForm">
         <div class="form-row-2">
           <div class="form-group">
             <label>First Name</label>
-            <input type="text" id="fname" placeholder="Garvita" required/>
+            <input type="text" id="fname" placeholder="Garvita" required autocomplete="given-name"/>
           </div>
           <div class="form-group">
             <label>Last Name</label>
-            <input type="text" id="lname" placeholder="Sharma" required/>
+            <input type="text" id="lname" placeholder="Manish Gupta" required autocomplete="family-name"/>
           </div>
         </div>
         <div class="form-group">
           <label>Email</label>
-          <input type="email" id="email" placeholder="you@school.edu" required/>
+          <input type="email" id="email" placeholder="you@college.edu" required autocomplete="email"/>
         </div>
         <div class="form-group">
-          <label>School <span style="color:var(--text-muted);font-weight:400;font-size:11px;text-transform:none">(optional)</span></label>
-          <input type="text" id="school" placeholder="e.g. Delhi Public School"/>
+          <label>School / College <span style="color:var(--text-muted);font-weight:400;font-size:11px;text-transform:none">(optional)</span></label>
+          <input type="text" id="school" placeholder="e.g. Delhi Public School" autocomplete="organization"/>
         </div>
         <div class="form-group">
           <label>Password</label>
           <div class="input-pw-wrap">
-            <input type="password" id="password" placeholder="Min. 6 characters" required/>
+            <input type="password" id="password" placeholder="Min. 6 characters" required autocomplete="new-password"/>
             <button type="button" class="toggle-pw" onclick="togglePw()">👁</button>
           </div>
           <div id="pwStrength" class="pw-strength"></div>
         </div>
         <label class="checkbox-label">
           <input type="checkbox" id="terms" required/>
-          I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>
+          I agree to the <a href="../terms.html" target="_blank">Terms</a> and <a href="../privacy.html" target="_blank">Privacy Policy</a>
         </label>
         <button type="submit" class="btn-primary btn-full" id="signupBtn">Create Account →</button>
       </form>
@@ -68,7 +74,6 @@
     </div>
   </div>
 
-  <!-- NO module type — plain script avoids double init issue -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script>
@@ -81,28 +86,56 @@
       appId: "1:612696020579:web:90255861a0d531f2580a56"
     };
 
-    // Safe init — won't crash if already initialized
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // If already logged in → dashboard
+    // Already logged in → dashboard
     auth.onAuthStateChanged(user => {
       if (user) window.location.href = 'dashboard.html';
     });
+
+    let isSubmitting = false;
+
+    function setLoading(loading) {
+      isSubmitting = loading;
+      const btn = document.getElementById('signupBtn');
+      const gBtn = document.getElementById('googleBtn');
+      if (loading) {
+        btn.innerHTML = '<span class="spinner"></span>Creating account...';
+        btn.classList.add('btn-loading');
+        gBtn.disabled = true;
+      } else {
+        btn.innerHTML = 'Create Account →';
+        btn.classList.remove('btn-loading');
+        gBtn.disabled = false;
+      }
+    }
 
     function showError(msg) {
       const el = document.getElementById('authError');
       el.textContent = msg;
       el.classList.add('show');
-      const btn = document.getElementById('signupBtn');
-      btn.textContent = 'Create Account →';
-      btn.disabled = false;
+      document.getElementById('authSuccess').style.display = 'none';
+    }
+
+    function showSuccess() {
+      document.getElementById('authError').classList.remove('show');
+      document.getElementById('authSuccess').style.display = 'block';
+    }
+
+    function saveProfile(uid, data) {
+      localStorage.setItem('diq_profile', JSON.stringify({
+        uid,
+        ...data,
+        badges: ['first_login'],
+        conferences: [],
+        researchCount: 0
+      }));
     }
 
     document.getElementById('signupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (isSubmitting) return; // prevent double submit
 
       const fname = document.getElementById('fname').value.trim();
       const lname = document.getElementById('lname').value.trim();
@@ -110,77 +143,67 @@
       const school = document.getElementById('school').value.trim();
       const password = document.getElementById('password').value;
 
-      if (!fname || !email || !password) {
-        showError('Please fill in all required fields.');
-        return;
-      }
+      if (!fname || !lname) { showError('Please enter your first and last name.'); return; }
+      if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
 
-      const btn = document.getElementById('signupBtn');
-      btn.textContent = 'Creating account...';
-      btn.disabled = true;
+      setLoading(true);
 
       try {
-        // Create account
         const cred = await auth.createUserWithEmailAndPassword(email, password);
+        const displayName = fname + ' ' + lname;
+        const initials = (fname[0] + lname[0]).toUpperCase();
 
-        // Save real name to Firebase Auth profile
-        const displayName = (fname + ' ' + lname).trim();
         await cred.user.updateProfile({ displayName });
 
-        // Save everything to localStorage
-        const profile = {
-          uid: cred.user.uid,
+        saveProfile(cred.user.uid, {
           firstName: fname,
           lastName: lname,
           displayName,
           email,
           school: school || '',
-          initials: (fname[0] + (lname[0] || '')).toUpperCase(),
-          badges: ['first_login'],
-          conferences: [],
-          researchCount: 0
-        };
-        localStorage.setItem('diq_profile', JSON.stringify(profile));
+          initials
+        });
 
-        // Go to dashboard!
-        window.location.replace('dashboard.html');
+        showSuccess();
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
 
       } catch (err) {
-        console.error('Signup error:', err.code, err.message);
+        setLoading(false);
         const msgs = {
-          'auth/email-already-in-use': 'This email is already registered. Try signing in!',
-          'auth/weak-password': 'Password must be at least 6 characters.',
-          'auth/invalid-email': 'Please enter a valid email address.',
-          'auth/network-request-failed': 'No internet. Check your connection.',
-          'auth/operation-not-allowed': 'Email signup is not enabled. Contact support.',
+          'auth/email-already-in-use': '⚠️ This email is already registered. Try signing in!',
+          'auth/weak-password': '⚠️ Password must be at least 6 characters.',
+          'auth/invalid-email': '⚠️ Please enter a valid email address.',
+          'auth/network-request-failed': '⚠️ No internet connection. Check your WiFi.',
+          'auth/too-many-requests': '⚠️ Too many attempts. Please wait a moment.',
+          'auth/unauthorized-domain': '⚠️ Domain not authorized. Contact support.',
         };
-        showError(msgs[err.code] || err.message);
+        showError(msgs[err.code] || '⚠️ ' + err.message);
       }
     });
 
-    // Google signup
     document.getElementById('googleBtn').addEventListener('click', async () => {
+      if (isSubmitting) return;
+      setLoading(true);
       try {
         const provider = new firebase.auth.GoogleAuthProvider();
         const cred = await auth.signInWithPopup(provider);
         const user = cred.user;
         const parts = (user.displayName || 'Delegate User').split(' ');
-        const profile = {
-          uid: user.uid,
+        saveProfile(user.uid, {
           firstName: parts[0],
           lastName: parts.slice(1).join(' '),
           displayName: user.displayName || 'Delegate',
           email: user.email,
           school: '',
-          initials: (parts[0][0] + (parts[1]?.[0] || '')).toUpperCase(),
-          badges: ['first_login'],
-          conferences: [],
-          researchCount: 0
-        };
-        localStorage.setItem('diq_profile', JSON.stringify(profile));
-        window.location.replace('dashboard.html');
+          initials: (parts[0][0] + (parts[1]?.[0] || '')).toUpperCase()
+        });
+        showSuccess();
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
       } catch (err) {
-        showError('Google sign-in failed. Try again.');
+        setLoading(false);
+        if (err.code !== 'auth/popup-closed-by-user') {
+          showError('⚠️ Google sign-in failed. Try again.');
+        }
       }
     });
 
@@ -194,8 +217,8 @@
       const v = this.value;
       const el = document.getElementById('pwStrength');
       if (!v) { el.innerHTML = ''; return; }
-      const s = v.length >= 10 ? 'strong' : v.length >= 6 ? 'medium' : 'weak';
-      const labels = { weak: '🔴 Too short', medium: '🟡 Medium', strong: '🟢 Strong' };
+      const s = v.length >= 10 && /[A-Z]/.test(v) && /[0-9]/.test(v) ? 'strong' : v.length >= 6 ? 'medium' : 'weak';
+      const labels = { weak: '🔴 Too short (min 6)', medium: '🟡 Medium', strong: '🟢 Strong' };
       el.innerHTML = '<span class="pw-label ' + s + '">' + labels[s] + '</span>';
     });
   </script>
