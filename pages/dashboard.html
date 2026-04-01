@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard — DelegateIQ</title>
+  <title>AI Assistant — DelegateIQ</title>
   <link rel="stylesheet" href="../css/style.css"/>
 </head>
 <body>
-
-<!-- Auth Guard -->
 <div class="auth-guard" id="authGuard">
   <div class="auth-guard-logo">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
@@ -17,8 +15,6 @@
 </div>
 
 <div class="app" id="appShell" style="display:none;">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <div class="sidebar-brand-mark">
@@ -26,21 +22,13 @@
       </div>
       <span class="sidebar-brand-name">DelegateIQ</span>
     </div>
-
-    <!-- Role switcher -->
-    <div class="sidebar-role-switch">
-      <button class="rsw-btn active" id="rswDelegate" onclick="switchRole('delegate')">Delegate</button>
-      <button class="rsw-btn" id="rswOrganizer" onclick="switchRole('organizer')">Organizer</button>
-    </div>
-
-    <!-- Delegate nav -->
-    <nav class="sidebar-nav" id="delegateNav">
+    <nav class="sidebar-nav">
       <div class="nav-section">Main</div>
-      <a href="dashboard.html" class="nav-item active">
+      <a href="dashboard.html" class="nav-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         Dashboard
       </a>
-      <a href="ai-chat.html" class="nav-item">
+      <a href="ai-chat.html" class="nav-item active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         AI Assistant
       </a>
@@ -67,448 +55,405 @@
         Profile & Badges
       </a>
     </nav>
-
-    <!-- Organizer nav (hidden by default) -->
-    <nav class="sidebar-nav" id="organizerNav" style="display:none;">
-      <div class="nav-section">Admin</div>
-      <a href="admin.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        Admin Dashboard
-      </a>
-      <a href="admin.html#announcements" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        Announcements
-      </a>
-      <a href="admin.html#committees" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-        Committees
-      </a>
-      <a href="admin.html#users" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Users
-      </a>
-    </nav>
-
     <div class="sidebar-footer">
-      <div class="sidebar-user" onclick="location.href='profile.html'" id="sidebarUser">
+      <div class="sidebar-user" onclick="location.href='profile.html'">
         <div class="sidebar-avatar" id="sidebarAvatar">?</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
-          <div class="sidebar-user-role" id="sidebarRoleLabel">Delegate</div>
+          <div class="sidebar-user-name" id="sidebarName">You</div>
+          <div class="sidebar-user-role">Delegate</div>
         </div>
       </div>
-      <a href="#" class="nav-item" id="logoutBtn" style="margin-top:2px;">
+      <a href="#" class="nav-item" id="logoutBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Logout
       </a>
     </div>
   </aside>
 
-  <!-- MAIN -->
-  <main class="app-main">
+  <main class="app-main chat-page" style="display:flex;flex-direction:column;overflow:hidden;">
     <header class="app-topbar">
       <button class="menu-btn topbar-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <span class="topbar-title">Dashboard</span>
+      <span class="topbar-title">AI Assistant</span>
       <div class="topbar-right">
-        <div class="notif-btn" id="notifBtn" onclick="toggleNotif()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span class="notif-dot" id="notifDot"></span>
+        <div class="chat-ctx-pill" id="ctxCommittee" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span id="ctxCommitteeText"></span>
         </div>
-        <div class="topbar-avatar" id="topbarAvatar" onclick="location.href='profile.html'">?</div>
+        <div class="chat-ctx-pill" id="ctxCountry" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span id="ctxCountryText"></span>
+        </div>
+        <div class="topbar-avatar" id="topbarAvatar">?</div>
       </div>
     </header>
 
-    <!-- Notif dropdown -->
-    <div id="notifDrop" style="display:none;position:fixed;top:60px;right:16px;width:280px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--shadow-lg);z-index:200;overflow:hidden;">
-      <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-size:13px;font-weight:700;">Notifications</span>
-        <button onclick="document.getElementById('notifDrop').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:12px;font-weight:600;">Clear</button>
-      </div>
-      <div id="notifList" style="padding:8px 0;max-height:300px;overflow-y:auto;"></div>
-    </div>
-
-    <div class="page-body" id="delegateDash">
-      <!-- Greeting -->
-      <div class="page-header">
-        <div class="page-header-greeting" id="greetingText">Good morning</div>
-        <div class="page-header-sub" id="greetingSub">Here's your MUN overview for today.</div>
-      </div>
-
-      <!-- Stats -->
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-card-label">Conferences</div>
-          <div class="stat-card-value" id="statConf">0</div>
-          <div class="stat-card-sub">attended</div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="messages-inner">
+        <div class="chat-welcome-state" id="chatWelcome">
+          <div class="chat-welcome-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3>AI Assistant</h3>
+          <p id="welcomeSubtext">Powered by Google Gemini. Ask anything about your committee, country positions, UN resolutions, or MUN procedure. Full detailed answers every time.</p>
+          <div class="chat-suggestions" id="suggestionsBox"></div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-label">Badges</div>
-          <div class="stat-card-value" id="statBadges">1</div>
-          <div class="stat-card-sub">earned</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-label">Research</div>
-          <div class="stat-card-value" id="statResearch">0</div>
-          <div class="stat-card-sub">sessions</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-label">Active MUNs</div>
-          <div class="stat-card-value" id="statMUNs">0</div>
-          <div class="stat-card-sub">in progress</div>
-        </div>
-      </div>
-
-      <!-- MUN Manager — multi-MUN support -->
-      <div class="mun-manager">
-        <div class="mun-manager-header">
-          <span class="mun-manager-title">My MUN Preparations</span>
-          <button class="btn btn-secondary btn-sm" onclick="openAddMUN()">+ Add MUN</button>
-        </div>
-        <div class="mun-list" id="munList">
-          <div style="padding:20px;text-align:center;color:var(--text-4);font-size:13px;">No MUNs added yet. Click "+ Add MUN" to get started.</div>
-        </div>
-      </div>
-
-      <!-- Active context card -->
-      <div class="context-card" id="contextCard" style="display:none;">
-        <div class="context-card-bg"></div>
-        <div class="context-info">
-          <div class="context-label">Active Context</div>
-          <div class="context-title" id="ctxTitle">No MUN selected</div>
-          <div class="context-chips" id="ctxChips"></div>
-        </div>
-        <div class="context-actions">
-          <button class="btn btn-secondary btn-sm" onclick="openAddMUN()">+ Add MUN</button>
-          <a href="ai-chat.html" class="btn btn-white btn-sm">Ask AI</a>
-        </div>
-      </div>
-
-      <!-- Quick actions -->
-      <div class="quick-actions">
-        <a href="ai-chat.html" class="qa-link qa-primary">
-          <div class="qa-icon">
+        <div id="messages"></div>
+        <div class="typing-state" id="typingState" style="display:none;">
+          <div class="msg-avatar ai">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
-          <div class="qa-text"><h4>AI Assistant</h4><p>Ask anything about your committee</p></div>
-          <div class="qa-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-        </a>
-        <a href="research.html" class="qa-link">
-          <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-          <div class="qa-text"><h4>Research</h4><p>UN docs & tools</p></div>
-        </a>
-        <a href="resolutions.html" class="qa-link">
-          <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-          <div class="qa-text"><h4>Resolutions</h4><p>Draft clauses</p></div>
-        </a>
-      </div>
-
-      <!-- Dash grid -->
-      <div class="dash-grid">
-        <div class="dash-card">
-          <div class="dash-card-head">
-            <h3>Announcements</h3>
-            <span class="chip chip-beige" id="annCount">0</span>
-          </div>
-          <div class="dash-card-body" id="annList">
-            <div style="color:var(--text-4);font-size:13px;text-align:center;padding:16px 0;">No announcements yet.</div>
-          </div>
-        </div>
-        <div class="dash-card">
-          <div class="dash-card-head"><h3>Recent Activity</h3></div>
-          <div class="dash-card-body">
-            <div class="ann-item">
-              <div class="ann-dot" style="background:var(--midnight);"></div>
-              <div><div class="ann-title">Account created</div><div class="ann-meta">Welcome to DelegateIQ</div></div>
-            </div>
-            <div class="ann-item" id="recentResearch" style="display:none;">
-              <div class="ann-dot"></div>
-              <div><div class="ann-title">Research session</div><div class="ann-meta" id="recentResearchMeta">AI Assistant used</div></div>
-            </div>
+          <div class="typing-bubble">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Organizer dash (hidden by default) -->
-    <div class="page-body" id="organizerDash" style="display:none;">
-      <div class="page-header">
-        <div class="page-header-greeting">Organizer View</div>
-        <div class="page-header-sub">Manage announcements, committees, and delegates.</div>
+    <div class="chat-input-dock">
+      <div class="chat-input-wrap">
+        <div class="chat-context-tag" id="inputCtxTag">No context set</div>
+        <textarea class="chat-textarea" id="chatInput" placeholder="Ask anything about MUN, your committee, country, resolutions..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="chat-send" id="sendBtn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
       </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);padding:32px;text-align:center;">
-        <div style="width:48px;height:48px;background:var(--midnight);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        </div>
-        <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">Admin Panel</h3>
-        <p style="font-size:13px;color:var(--text-3);margin-bottom:20px;">Post announcements, manage committees, and view registered delegates.</p>
-        <a href="admin.html" class="btn btn-primary">Open Admin Panel</a>
-      </div>
+      <div class="chat-input-note">Powered by Google Gemini · For research purposes · Verify with official UN documents</div>
     </div>
   </main>
-</div>
-
-<!-- Add MUN Modal -->
-<div class="mun-modal-backdrop" id="munModal" style="display:none;" onclick="if(event.target===this)closeMUNModal()">
-  <div class="mun-modal">
-    <h3>Add MUN Preparation</h3>
-    <p>You can add multiple MUNs and switch between them. Your AI context updates automatically.</p>
-    <div class="mun-form">
-      <div class="form-field">
-        <label class="form-label">Conference Name</label>
-        <input class="form-input" type="text" id="munName" placeholder="e.g. DELMUN 2025, HMUN 2026"/>
-      </div>
-      <div class="form-row-2">
-        <div class="form-field">
-          <label class="form-label">Committee Type</label>
-          <select class="form-select" id="munCommitteeType" onchange="updateCommitteeOptions()">
-            <option value="un">UN Committee</option>
-            <option value="indian">Indian Committee</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label class="form-label">Committee</label>
-          <select class="form-select" id="munCommittee"></select>
-        </div>
-      </div>
-      <div class="form-field">
-        <label class="form-label">Country / Portfolio</label>
-        <input class="form-input" type="text" id="munCountry" placeholder="e.g. France, India, Ministry of Finance"/>
-      </div>
-      <div class="form-field">
-        <label class="form-label">Agenda Topic</label>
-        <input class="form-input" type="text" id="munTopic" placeholder="e.g. Human Trafficking, Defence Policy"/>
-      </div>
-      <div class="form-field">
-        <label class="form-label">Conference Date (optional)</label>
-        <input class="form-input" type="date" id="munDate"/>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:4px;">
-        <button class="btn btn-primary" onclick="saveMUN()">Add MUN</button>
-        <button class="btn btn-ghost" onclick="closeMUNModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
-const fc={apiKey:"AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",authDomain:"delegate-iq-2025.firebaseapp.com",projectId:"delegate-iq-2025",storageBucket:"delegate-iq-2025.firebasestorage.app",messagingSenderId:"612696020579",appId:"1:612696020579:web:90255861a0d531f2580a56"};
-if(!firebase.apps.length) firebase.initializeApp(fc);
-const auth = firebase.auth();
+  // ── CONFIG ──
+  const GEMINI_API_KEY = 'AIzaSyDNQLTxeghCtIkg1aplQ_v3WDn4b_qTa3o'; // paste from aistudio.google.com
+  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-const UN_COMMITTEES = ['UNSC','UNGA','WHO','HRC','UNHRC','UNODC','ECOSOC','ICJ','DISEC','SPECPOL','SOCHUM','LEGAL'];
-const INDIAN_COMMITTEES = ['Lok Sabha','Rajya Sabha','Cabinet Committee','State Legislature','NITI Aayog','Ministry of External Affairs','Ministry of Finance','Ministry of Defence'];
+  const fc={apiKey:"AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",authDomain:"delegate-iq-2025.firebaseapp.com",projectId:"delegate-iq-2025",storageBucket:"delegate-iq-2025.firebasestorage.app",messagingSenderId:"612696020579",appId:"1:612696020579:web:90255861a0d531f2580a56"};
+  if(!firebase.apps.length) firebase.initializeApp(fc);
+  const auth = firebase.auth();
 
-function getProfile(){try{return JSON.parse(localStorage.getItem('diq_profile')||'{}');}catch(e){return{};}}
-function getSetup(){try{return JSON.parse(localStorage.getItem('diq_setup')||'{}');}catch(e){return{};}}
-function getMUNs(){try{return JSON.parse(localStorage.getItem('diq_muns')||'[]');}catch(e){return[];}}
-function saveMUNs(muns){localStorage.setItem('diq_muns',JSON.stringify(muns));}
+  let munSetup = {}, userProfile = {}, chatHistory = [];
+  try { munSetup = JSON.parse(localStorage.getItem('diq_setup') || '{}'); } catch(e){}
+  try { userProfile = JSON.parse(localStorage.getItem('diq_profile') || '{}'); } catch(e){}
 
-let currentRole = 'delegate';
+  // Get active MUN context
+  try {
+    const muns = JSON.parse(localStorage.getItem('diq_muns') || '[]');
+    const active = muns.find(m => m.active);
+    if (active) munSetup = { committee: active.committee, country: active.country, topic: active.topic, conferenceName: active.name };
+  } catch(e){}
 
-firebase.auth().onAuthStateChanged(function(user){
-  if(!user){window.location.replace('login.html');return;}
+  const committee = munSetup.committee || '';
+  const country = munSetup.country || '';
+  const topic = munSetup.topic || '';
 
-  var guard=document.getElementById('authGuard');
-  var app=document.getElementById('appShell');
-  guard.style.opacity='0'; guard.style.transition='opacity 0.3s';
-  setTimeout(function(){guard.style.display='none';app.style.display='flex';},300);
+  const SYSTEM_PROMPT = `You are DelegateIQ, an expert MUN (Model United Nations) AI assistant with deep knowledge of:
+- UN resolutions, international law, treaties and conventions
+- Country foreign policies, voting histories and geopolitical positions
+- MUN procedure (Points of Order, caucus types, resolution writing, debate rules)
+- Committee-specific knowledge (UNSC, UNGA, WHO, HRC, UNHRC, UNODC, Indian committees etc)
+- Position paper writing, opening speeches, clause drafting, debate strategy
 
-  var profile=getProfile();
-  var name=profile.displayName||user.displayName||user.email.split('@')[0];
-  var initials=profile.initials||(name.substring(0,2).toUpperCase());
-  var school=profile.school||'Member';
+${committee ? `Delegate's committee: ${committee}` : ''}
+${country ? `Representing: ${country}` : ''}
+${topic ? `Agenda topic: ${topic}` : ''}
 
-  document.getElementById('sidebarAvatar').textContent=initials;
-  document.getElementById('sidebarName').textContent=name;
-  document.getElementById('topbarAvatar').textContent=initials;
+RESPONSE RULES - CRITICAL:
+- Always give complete, thorough answers — never one or two lines
+- Every answer needs: background/context, current situation, key facts, relevant UN resolutions with numbers
+- Use **bold** for headings and key terms
+- When asked about country position: historical context + current stance + key arguments + relevant resolutions
+- When asked about topic: full background + UN framework + key debates between blocs
+- Cite real UN resolution numbers (e.g. UNSC Res. 2254, UNGA Res. 3314)
+- Minimum 150-200 words per answer
+- Write as if preparing a smart student for a real committee`;
 
-  // Greeting
-  var hour=new Date().getHours();
-  var greet=hour<12?'Good morning':'hour<17?'Good afternoon':'Good evening';
-  document.getElementById('greetingText').textContent=greet+', '+name.split(' ')[0];
-  document.getElementById('greetingSub').textContent='Here is your MUN overview for today.';
+  auth.onAuthStateChanged(user => {
+    if (!user) { window.location.replace('login.html'); return; }
 
-  // Stats
-  var confs=(profile.conferences||[]).length;
-  var badges=(profile.badges||['first_login']).length;
-  var research=profile.researchCount||0;
-  var muns=getMUNs();
-  document.getElementById('statConf').textContent=confs;
-  document.getElementById('statBadges').textContent=badges;
-  document.getElementById('statResearch').textContent=research;
-  document.getElementById('statMUNs').textContent=muns.length;
+    const guard = document.getElementById('authGuard');
+    const app = document.getElementById('appShell');
+    guard.style.opacity = '0'; guard.style.transition = 'opacity 0.3s';
+    setTimeout(() => { guard.style.display = 'none'; app.style.display = 'flex'; }, 300);
 
-  // Restore role
-  currentRole=profile.role||'delegate';
-  renderRole();
+    const name = userProfile.displayName || user.displayName || user.email.split('@')[0];
+    const initials = userProfile.initials || name.substring(0, 2).toUpperCase();
+    document.getElementById('sidebarAvatar').textContent = initials;
+    document.getElementById('sidebarName').textContent = name;
+    document.getElementById('topbarAvatar').textContent = initials;
 
-  // Render MUNs
-  renderMUNs();
+    // Context pills
+    if (committee) {
+      document.getElementById('ctxCommittee').style.display = 'flex';
+      document.getElementById('ctxCommitteeText').textContent = committee;
+    }
+    if (country) {
+      document.getElementById('ctxCountry').style.display = 'flex';
+      document.getElementById('ctxCountryText').textContent = country;
+    }
 
-  // Announcements
-  loadAnnouncements();
+    document.getElementById('inputCtxTag').textContent =
+      (committee || country) ? `${committee || ''}${committee && country ? ' · ' : ''}${country || ''}` : 'No context — set up on Dashboard';
 
-  // Recent activity
-  if(research>0){
-    document.getElementById('recentResearch').style.display='flex';
-    document.getElementById('recentResearchMeta').textContent=research+' AI session'+(research!==1?'s':'');
+    document.getElementById('welcomeSubtext').textContent =
+      (committee || country || topic)
+        ? `Context: ${[committee, topic, country].filter(Boolean).join(' · ')}. Ask anything — full answers every time.`
+        : 'No MUN context set. Go to Dashboard to add a MUN. Ask anything about MUN procedure, resolutions, or country positions.';
+
+    // Suggestions
+    const suggestions = committee || country ? [
+      country ? `What is ${country}'s full position on ${topic || 'this agenda topic'} and why?` : `What are the key debates in ${committee}?`,
+      topic ? `Explain the complete background and history of "${topic}"` : `What are the most important procedure rules in ${committee}?`,
+      `How do I write a strong opening speech${country ? ' for ' + country : ''}?`,
+      country ? `What counter-arguments will opposing blocs use against ${country}?` : `How do I raise a Point of Order correctly?`
+    ] : [
+      'Explain how the UN Security Council works and its veto power',
+      'How do I write preambulatory and operative clauses properly?',
+      'What is a Point of Order and when should I use it?',
+      'How do I write a strong MUN position paper?'
+    ];
+
+    document.getElementById('suggestionsBox').innerHTML = suggestions.map(s =>
+      `<button class="chat-suggestion" onclick="askSuggestion(this)">${s}</button>`
+    ).join('');
+
+    // Check prefill from research page
+    const prefill = localStorage.getItem('diq_ai_prefill');
+    if (prefill) {
+      localStorage.removeItem('diq_ai_prefill');
+      document.getElementById('chatInput').value = prefill;
+      sendMessage();
+    }
+  });
+
+  // ── GEMINI API CALL ──
+  async function callGemini(userMessage) {
+    chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
+
+    const body = {
+      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: chatHistory,
+      generationConfig: { maxOutputTokens: 1500, temperature: 0.7 }
+    };
+
+    const response = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const reply = data.candidates[0].content.parts[0].text;
+    chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+
+    // Keep last 10 turns
+    if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+    return reply;
   }
 
-  // Notifications
-  var notifications=[{text:'Welcome to DelegateIQ, '+name.split(' ')[0]+'!',sub:'Your account is ready'}];
-  if(muns.length>0) notifications.push({text:'Active MUN: '+muns.find(m=>m.active)?.name||muns[0].name,sub:'Tap to switch context'});
-  renderNotifications(notifications);
-});
+  // ── DEEPER EXPLANATION ──
+  async function callGeminiDeeper(originalQ, originalA) {
+    const body = {
+      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: [
+        { role: 'user', parts: [{ text: originalQ }] },
+        { role: 'model', parts: [{ text: originalA }] },
+        { role: 'user', parts: [{ text: 'Go much deeper. Add: specific historical examples, timeline of key events, actual UN resolution numbers with dates, how different country blocs (Western, G77, BRICS, etc.) view this differently, and specific debate strategy tips for using this knowledge in committee.' }] }
+      ],
+      generationConfig: { maxOutputTokens: 1500, temperature: 0.7 }
+    };
 
-function renderRole(){
-  var isOrg=currentRole==='organizer';
-  document.getElementById('delegateNav').style.display=isOrg?'none':'flex';
-  document.getElementById('organizerNav').style.display=isOrg?'flex':'none';
-  document.getElementById('delegateDash').style.display=isOrg?'none':'block';
-  document.getElementById('organizerDash').style.display=isOrg?'block':'none';
-  document.getElementById('rswDelegate').classList.toggle('active',!isOrg);
-  document.getElementById('rswOrganizer').classList.toggle('active',isOrg);
-  document.getElementById('sidebarRoleLabel').textContent=isOrg?'Organizer':'Delegate';
-}
+    const response = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
 
-window.switchRole=function(role){
-  currentRole=role;
-  var p=getProfile(); p.role=role;
-  localStorage.setItem('diq_profile',JSON.stringify(p));
-  renderRole();
-};
-
-function renderMUNs(){
-  var muns=getMUNs();
-  var list=document.getElementById('munList');
-  if(!muns.length){
-    list.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-4);font-size:13px;">No MUNs added yet. Click &ldquo;+ Add MUN&rdquo; to get started.</div>';
-    document.getElementById('contextCard').style.display='none';
-    return;
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.candidates[0].content.parts[0].text;
   }
-  list.innerHTML=muns.map(function(m,i){
-    return '<div class="mun-item'+(m.active?' active':'')+'" onclick="setActiveMUN('+i+')" id="munItem'+i+'">'+
-      '<div class="mun-item-dot"></div>'+
-      '<div class="mun-item-info">'+
-        '<div class="mun-item-name">'+esc(m.name)+'</div>'+
-        '<div class="mun-item-meta">'+esc(m.committee||'')+(m.country?' &middot; '+esc(m.country):'')+(m.date?' &middot; '+new Date(m.date).toLocaleDateString('en-IN',{month:'short',year:'numeric'}):'')+'</div>'+
-      '</div>'+
-      (m.active?'<span class="mun-item-badge">Active</span>':'')+
-      '<button onclick="event.stopPropagation();deleteMUN('+i+')" style="background:none;border:none;cursor:pointer;color:var(--text-4);font-size:13px;padding:4px;margin-left:8px;" title="Remove">&#x2715;</button>'+
-    '</div>';
-  }).join('');
-  var active=muns.find(function(m){return m.active;});
-  if(active){
-    document.getElementById('contextCard').style.display='flex';
-    document.getElementById('ctxTitle').textContent=active.name;
-    var chips='';
-    if(active.committee) chips+='<span class="context-chip">'+esc(active.committee)+'</span>';
-    if(active.country) chips+='<span class="context-chip">'+esc(active.country)+'</span>';
-    if(active.topic) chips+='<span class="context-chip">'+esc(active.topic)+'</span>';
-    document.getElementById('ctxChips').innerHTML=chips;
-    // Save to diq_setup for AI context
-    localStorage.setItem('diq_setup',JSON.stringify({committee:active.committee,country:active.country,topic:active.topic,conferenceName:active.name,committeeType:active.committeeType||'un'}));
-  }
-  document.getElementById('statMUNs').textContent=muns.length;
-}
 
-window.setActiveMUN=function(idx){
-  var muns=getMUNs();
-  muns.forEach(function(m,i){m.active=i===idx;});
-  saveMUNs(muns);
-  renderMUNs();
-};
+  // ── SEND ──
+  window.sendMessage = async function() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
 
-window.deleteMUN=function(idx){
-  if(!confirm('Remove this MUN preparation?')) return;
-  var muns=getMUNs();
-  muns.splice(idx,1);
-  if(muns.length>0&&!muns.some(function(m){return m.active;})) muns[0].active=true;
-  saveMUNs(muns);
-  renderMUNs();
-};
+    document.getElementById('chatWelcome').style.display = 'none';
+    appendUserMsg(text);
+    input.value = ''; input.style.height = 'auto';
 
-window.openAddMUN=function(){
-  document.getElementById('munModal').style.display='flex';
-  updateCommitteeOptions();
-};
-window.closeMUNModal=function(){document.getElementById('munModal').style.display='none';};
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true;
+    document.getElementById('typingState').style.display = 'flex';
+    scrollBottom();
 
-window.updateCommitteeOptions=function(){
-  var type=document.getElementById('munCommitteeType').value;
-  var sel=document.getElementById('munCommittee');
-  var opts=type==='indian'?INDIAN_COMMITTEES:UN_COMMITTEES;
-  sel.innerHTML=opts.map(function(o){return '<option>'+o+'</option>';}).join('');
-};
+    try {
+      const reply = await callGemini(text);
+      document.getElementById('typingState').style.display = 'none';
+      appendAIMsg(text, reply);
 
-window.saveMUN=function(){
-  var name=document.getElementById('munName').value.trim();
-  if(!name){alert('Please enter a conference name.');return;}
-  var muns=getMUNs();
-  var newMUN={
-    id:Date.now(), name:name,
-    committeeType:document.getElementById('munCommitteeType').value,
-    committee:document.getElementById('munCommittee').value,
-    country:document.getElementById('munCountry').value.trim(),
-    topic:document.getElementById('munTopic').value.trim(),
-    date:document.getElementById('munDate').value||null,
-    active:muns.length===0
+      // Track research + badges
+      try {
+        const p = JSON.parse(localStorage.getItem('diq_profile') || '{}');
+        p.researchCount = (p.researchCount || 0) + 1;
+        if (!p.badges) p.badges = ['first_login'];
+        if (p.researchCount === 1 && !p.badges.includes('first_research')) p.badges.push('first_research');
+        if (p.researchCount >= 10 && !p.badges.includes('ten_research')) p.badges.push('ten_research');
+        localStorage.setItem('diq_profile', JSON.stringify(p));
+      } catch(e) {}
+
+    } catch(err) {
+      document.getElementById('typingState').style.display = 'none';
+      const msg = GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE'
+        ? 'Gemini API key not configured. Get your free key at aistudio.google.com and add it to ai-chat.html.'
+        : err.message.includes('400') ? 'Invalid request. Please try again.'
+        : err.message.includes('429') ? 'Rate limit reached. Wait a moment and try again.'
+        : 'Connection error. Check your internet and try again.';
+      appendErrorMsg(msg);
+    }
+
+    btn.disabled = false;
+    scrollBottom();
   };
-  muns.push(newMUN);
-  saveMUNs(muns);
-  closeMUNModal();
-  // Clear form
-  ['munName','munCountry','munTopic','munDate'].forEach(function(id){document.getElementById(id).value='';});
-  renderMUNs();
-};
 
-function loadAnnouncements(){
-  var anns=[];try{anns=JSON.parse(localStorage.getItem('diq_announcements')||'[]');}catch(e){}
-  var list=document.getElementById('annList');
-  document.getElementById('annCount').textContent=anns.length;
-  if(!anns.length){list.innerHTML='<div style="color:var(--text-4);font-size:13px;text-align:center;padding:16px 0;">No announcements yet.</div>';return;}
-  list.innerHTML=anns.slice(0,4).map(function(a){
-    return '<div class="ann-item">'+
-      '<div class="ann-dot" style="background:'+(a.type==='deadline'?'var(--rosy)':a.type==='event'?'var(--midnight)':'var(--moss)')+'"></div>'+
-      '<div><div class="ann-title">'+esc(a.title)+'</div><div class="ann-body">'+esc(a.body.substring(0,80))+(a.body.length>80?'...':'')+'</div><div class="ann-meta">'+new Date(a.date).toLocaleDateString('en-IN',{day:'numeric',month:'short'})+'</div></div>'+
-    '</div>';
-  }).join('');
-}
+  function appendUserMsg(text) {
+    const msgs = document.getElementById('messages');
+    const d = document.createElement('div');
+    d.className = 'msg user';
+    d.innerHTML = `<div class="msg-bubble">${esc(text)}</div>`;
+    msgs.appendChild(d);
+    scrollBottom();
+  }
 
-function renderNotifications(notifs){
-  var list=document.getElementById('notifList');
-  list.innerHTML=notifs.map(function(n){
-    return '<div style="padding:12px 16px;border-bottom:1px solid var(--border);">'+
-      '<div style="font-size:13px;font-weight:600;margin-bottom:2px;">'+esc(n.text)+'</div>'+
-      '<div style="font-size:11px;color:var(--text-3);">'+esc(n.sub)+'</div></div>';
-  }).join('');
-}
+  function appendErrorMsg(text) {
+    const msgs = document.getElementById('messages');
+    const d = document.createElement('div');
+    d.className = 'msg ai';
+    d.innerHTML = `
+      <div class="msg-avatar ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="msg-bubble" style="background:var(--rosy-pale);border-color:rgba(176,112,112,0.25);">
+        <p style="color:var(--rosy);font-weight:500;">${esc(text)}</p>
+      </div>`;
+    msgs.appendChild(d);
+    scrollBottom();
+  }
 
-window.toggleNotif=function(){
-  var d=document.getElementById('notifDrop');
-  d.style.display=d.style.display==='none'?'block':'none';
-  document.getElementById('notifDot').style.display='none';
-};
+  function appendAIMsg(question, text) {
+    const msgs = document.getElementById('messages');
+    const id = 'msg' + Date.now();
+    const d = document.createElement('div');
+    d.className = 'msg ai';
+    d.innerHTML = `
+      <div class="msg-avatar ai">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="msg-bubble" id="${id}">
+        <div id="ans-${id}">${formatText(esc(text))}</div>
+        <div class="msg-actions">
+          <button class="msg-action primary" id="expbtn-${id}" onclick="loadDeeper('${id}','${esc(question)}','${esc(text)}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Explain more
+          </button>
+          <button class="msg-action" onclick="copyMsg('${id}', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+        <div id="exp-${id}" style="display:none;">
+          <div class="expanded-divider"></div>
+          <div class="expanded-content" id="deep-${id}">
+            <p style="color:var(--text-4);font-size:13px;">Loading deeper analysis from Gemini...</p>
+          </div>
+        </div>
+      </div>`;
+    msgs.appendChild(d);
+  }
 
-document.getElementById('logoutBtn').addEventListener('click',function(e){
-  e.preventDefault();
-  auth.signOut();
-  localStorage.removeItem('diq_profile');localStorage.removeItem('diq_setup');localStorage.removeItem('diq_muns');
-  window.location.href='../index.html';
-});
+  window.loadDeeper = async function(id, question, answer) {
+    const btn = document.getElementById('expbtn-' + id);
+    const exp = document.getElementById('exp-' + id);
+    const deep = document.getElementById('deep-' + id);
 
-document.addEventListener('click',function(e){
-  var sb=document.getElementById('sidebar'),mb=document.querySelector('.topbar-menu-btn');
-  if(sb.classList.contains('open')&&!sb.contains(e.target)&&mb&&!mb.contains(e.target)) sb.classList.remove('open');
-  var nd=document.getElementById('notifDrop'),nb=document.getElementById('notifBtn');
-  if(nd.style.display!=='none'&&!nd.contains(e.target)&&!nb.contains(e.target)) nd.style.display='none';
-});
+    if (exp.style.display !== 'none' && deep.dataset.loaded) {
+      exp.style.display = 'none';
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Explain more`;
+      return;
+    }
 
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+    exp.style.display = 'block';
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Loading...`;
+    btn.disabled = true;
+    scrollBottom();
+
+    try {
+      const deeper = await callGeminiDeeper(question, answer);
+      deep.innerHTML = formatText(esc(deeper));
+      deep.dataset.loaded = 'true';
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Show less`;
+      btn.disabled = false;
+      btn.onclick = function() {
+        exp.style.display = 'none';
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Explain more`;
+        btn.onclick = function() { loadDeeper(id, question, answer); };
+      };
+    } catch(err) {
+      deep.innerHTML = '<p style="color:var(--rosy);font-size:13px;">Could not load deeper explanation. Try again.</p>';
+      btn.innerHTML = 'Explain more'; btn.disabled = false;
+    }
+    scrollBottom();
+  };
+
+  window.copyMsg = function(id, btn) {
+    const ans = document.getElementById('ans-' + id)?.textContent || '';
+    const deep = document.getElementById('deep-' + id)?.textContent || '';
+    const deepText = deep && !deep.includes('Loading') ? '\n\n---\n' + deep : '';
+    navigator.clipboard.writeText(ans + deepText);
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied`;
+    setTimeout(() => btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`, 2000);
+  };
+
+  window.askSuggestion = function(btn) {
+    document.getElementById('chatInput').value = btn.textContent;
+    sendMessage();
+    document.getElementById('chatWelcome').style.display = 'none';
+  };
+
+  window.handleKey = function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
+  window.autoResize = function(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; };
+
+  function formatText(t) {
+    return t
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n• /g, '<br>• ')
+      .replace(/\n- /g, '<br>• ')
+      .replace(/\n(\d+)\. /g, (m, n) => '<br><strong>' + n + '.</strong> ')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>').replace(/$/, '</p>');
+  }
+
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function scrollBottom() { const c = document.getElementById('chatMessages'); setTimeout(() => c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' }), 100); }
+
+  document.getElementById('logoutBtn').addEventListener('click', async e => {
+    e.preventDefault();
+    await auth.signOut();
+    localStorage.removeItem('diq_profile'); localStorage.removeItem('diq_setup');
+    window.location.href = '../index.html';
+  });
+
+  document.addEventListener('click', e => {
+    const sb = document.getElementById('sidebar');
+    const mb = document.querySelector('.topbar-menu-btn');
+    if (sb.classList.contains('open') && !sb.contains(e.target) && mb && !mb.contains(e.target)) sb.classList.remove('open');
+  });
 </script>
 </body>
 </html>
