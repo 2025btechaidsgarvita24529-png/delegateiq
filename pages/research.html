@@ -5,8 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Research — DelegateIQ</title>
   <link rel="stylesheet" href="../css/style.css"/>
+<style>
+  /* Auth Guard Overlay */
+  #authGuard {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #FAF7F2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 99999;
+  }
+  #authGuard .ag-logo {
+    width: 56px; height: 56px;
+    background: #D97706;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 900; color: white;
+    font-family: 'Trebuchet MS', sans-serif;
+    animation: agPulse 1.5s ease-in-out infinite;
+  }
+  #authGuard p {
+    font-size: 14px; font-weight: 600;
+    color: #8B7355;
+    font-family: 'Nunito', sans-serif;
+  }
+  @keyframes agPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.95); opacity: 0.8; }
+  }
+</style>
 </head>
 <body class="app-page">
+  <!-- AUTH GUARD -->
+  <style id="authGuardStyle">
+    body.app-page .main-content, body.app-page aside.sidebar { visibility:hidden !important; }
+    #authLoadingScreen { position:fixed;top:0;left:0;width:100%;height:100%;background:#FAF7F2;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999; }
+    .auth-spinner { width:44px;height:44px;border:3px solid #E8DFD0;border-top-color:#D97706;border-radius:50%;animation:authspin 0.8s linear infinite;margin-bottom:16px; }
+    @keyframes authspin { to { transform:rotate(360deg); } }
+    .auth-logo-txt { font-size:28px;font-weight:900;color:#1A1008;font-family:Trebuchet MS; }
+    .auth-sub-txt { font-size:13px;color:#8B7355;font-weight:600;margin-top:6px; }
+  </style>
+  <div id="authLoadingScreen">
+    <div class="auth-spinner"></div>
+    <div class="auth-logo-txt">DelegateIQ</div>
+    <div class="auth-sub-txt">Verifying your session...</div>
+  </div>
+  <!-- Auth Guard Overlay - hidden after auth check -->
+  <div id="authGuard">
+    <div class="ag-logo">D</div>
+    <p>Verifying your session...</p>
+  </div>
+
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo"><div class="logo-mark">D</div><span class="logo-text">DelegateIQ</span></div>
     <nav class="sidebar-nav">
@@ -129,8 +182,20 @@
       document.getElementById('headerAvatar').textContent=initials;
     }
 
+    
+    function authReady() {
+      var s = document.getElementById('authLoadingScreen');
+      var g = document.getElementById('authGuardStyle');
+      if(s) s.style.display='none';
+      if(g) g.textContent='';
+    }
     firebase.auth().onAuthStateChanged(user=>{
-      if(!user){window.location.href='login.html';return;}
+      if(!user){window.location.href='login.html';return;} authReady();
+      // Hide auth guard - user is verified
+      (function() {
+        var g = document.getElementById('authGuard');
+        if (g) { g.style.transition = 'opacity 0.3s'; g.style.opacity = '0'; setTimeout(function(){ g.style.display='none'; }, 300); }
+      })();
       if(!userProfile.displayName&&user.displayName){
         const initials=user.displayName.substring(0,2).toUpperCase();
         document.getElementById('sidebarAvatar').textContent=initials;
@@ -210,17 +275,19 @@
                 <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;font-weight:600;">${esc(short)}</p>
                 <div style="display:flex;gap:8px;">
                   <button class="btn-ghost-sm" onclick="event.stopPropagation();copyText('${esc(p.title+': '+extract.substring(0,400))}',this)">📋 Copy</button>
-                  <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(p.title)}" target="_blank" class="btn-ghost-sm" onclick="event.stopPropagation()">🔗 Read full</a>
+                  <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(p.title)}" target="_blank" class="btn btn-ghost btn-sm" onclick="event.stopPropagation()" style="font-size:11px;">Wikipedia</a>
+                  <a href="https://digitallibrary.un.org/search?p=${encodeURIComponent(q)}+${encodeURIComponent(p.title)}" target="_blank" class="btn btn-ghost btn-sm" onclick="event.stopPropagation()" style="font-size:11px;">UN Library</a>
                   <button class="btn-ghost-sm" onclick="event.stopPropagation();askAIAbout('${esc(p.title)}')">🤖 Ask AI</button>
                 </div>
               </div>`;
           }).join('')}
           <div style="margin-top:16px;padding:14px;background:var(--amber-pale);border:1px solid var(--amber-soft);border-radius:var(--r-md);">
-            <p style="font-size:12px;color:var(--amber);font-weight:700;">📚 For official UN documents: <a href="https://digitallibrary.un.org/search?p=${encodeURIComponent(q)}" target="_blank" style="color:var(--terracotta);">Search UN Digital Library →</a></p>
+            <p style="font-size:12px;color:var(--text-3);">For official UN documents: <a href="https://digitallibrary.un.org/search?p=${encodeURIComponent(q)}&action_search=Search" target="_blank" style="color:var(--midnight);font-weight:600;">Search UN Digital Library</a></p>
           </div>`;
 
       }catch(err){
-        r.innerHTML=`<div style="text-align:center;padding:40px;color:var(--terracotta);font-weight:600;">Search failed. Check internet connection.</div>
+        r.innerHTML=`<div style="text-align:center;padding:30px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;margin-bottom:16px;"><p style="color:var(--text-2);font-size:14px;margin-bottom:16px;">Wikipedia results unavailable. Search the official UN database directly:</p><a href="https://digitallibrary.un.org/search?p=${encodeURIComponent(q)}&action_search=Search" target="_blank" class="btn btn-primary">Open in UN Digital Library</a></div>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('searchResults').innerHTML='';document.getElementById('toolsSection').style.display='block'">Back to tools</button>
         <button class="btn-ghost-sm" style="display:block;margin:0 auto;" onclick="document.getElementById('searchResults').innerHTML='';document.getElementById('toolsSection').style.display='block'">← Back</button>`;
       }
     };
