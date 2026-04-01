@@ -3,457 +3,224 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Assistant — DelegateIQ</title>
+  <title>Sign Up — DelegateIQ</title>
   <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;min-width:0}
+    .form-row-2 .form-group{min-width:0}
+    .form-row-2 input{width:100%;min-width:0;box-sizing:border-box}
+    .auth-card{overflow:hidden}
+    .btn-loading{opacity:0.7;cursor:not-allowed;pointer-events:none}
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:6px;vertical-align:middle}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
 </head>
-<body>
-<div class="auth-guard" id="authGuard">
-  <div class="auth-guard-logo">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-  </div>
-  <p>Verifying session...</p>
-</div>
-
-<div class="app" id="appShell" style="display:none;">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="sidebar-brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+<body class="auth-page">
+  <div class="auth-container">
+    <a href="../index.html" class="auth-logo-centered">
+      <div class="logo-mark">D</div>
+      <span class="logo-text">DelegateIQ</span>
+    </a>
+    <div class="auth-card">
+      <div class="auth-toggle-row">
+        <a href="login.html" class="auth-toggle">Sign In</a>
+        <a href="signup.html" class="auth-toggle active">Sign Up</a>
       </div>
-      <span class="sidebar-brand-name">DelegateIQ</span>
-    </div>
-    <nav class="sidebar-nav">
-      <div class="nav-section">Main</div>
-      <a href="dashboard.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        Dashboard
-      </a>
-      <a href="ai-chat.html" class="nav-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        AI Assistant
-      </a>
-      <a href="research.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Research
-      </a>
-      <a href="resolutions.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Resolutions
-      </a>
-      <div class="nav-section">Community</div>
-      <a href="network.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Network
-      </a>
-      <a href="chats.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Committee Chats
-      </a>
-      <div class="nav-section">You</div>
-      <a href="profile.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Profile & Badges
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-user" onclick="location.href='profile.html'">
-        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
-        <div class="sidebar-user-info">
-          <div class="sidebar-user-name" id="sidebarName">You</div>
-          <div class="sidebar-user-role">Delegate</div>
+      <h2 class="auth-title">Join DelegateIQ ✦</h2>
+      <p class="auth-sub">Free forever — no credit card required</p>
+      <div class="auth-error" id="authError"></div>
+      <div id="authSuccess" style="background:#F0FDF4;border:1px solid #86EFAC;color:#166534;padding:10px 14px;border-radius:var(--r-md);font-size:13px;font-weight:600;display:none;">
+        ✅ Account created! Redirecting...
+      </div>
+      <form class="auth-form" id="signupForm">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="fname" placeholder="Garvita" required autocomplete="given-name"/>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="lname" placeholder="Manish Gupta" required autocomplete="family-name"/>
+          </div>
         </div>
-      </div>
-      <a href="#" class="nav-item" id="logoutBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Logout
-      </a>
-    </div>
-  </aside>
-
-  <main class="app-main chat-page" style="display:flex;flex-direction:column;overflow:hidden;">
-    <header class="app-topbar">
-      <button class="menu-btn topbar-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="you@college.edu" required autocomplete="email"/>
+        </div>
+        <div class="form-group">
+          <label>School / College <span style="color:var(--text-muted);font-weight:400;font-size:11px;text-transform:none">(optional)</span></label>
+          <input type="text" id="school" placeholder="e.g. Delhi Public School" autocomplete="organization"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-pw-wrap">
+            <input type="password" id="password" placeholder="Min. 6 characters" required autocomplete="new-password"/>
+            <button type="button" class="toggle-pw" onclick="togglePw()">👁</button>
+          </div>
+          <div id="pwStrength" class="pw-strength"></div>
+        </div>
+        <label class="checkbox-label">
+          <input type="checkbox" id="terms" required/>
+          I agree to the <a href="../terms.html" target="_blank">Terms</a> and <a href="../privacy.html" target="_blank">Privacy Policy</a>
+        </label>
+        <button type="submit" class="btn-primary btn-full" id="signupBtn">Create Account →</button>
+      </form>
+      <div class="auth-divider"><span>or</span></div>
+      <button class="google-btn" id="googleBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
       </button>
-      <span class="topbar-title">AI Assistant</span>
-      <div class="topbar-right">
-        <div class="chat-ctx-pill" id="ctxCommittee" style="display:none;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-          <span id="ctxCommitteeText"></span>
-        </div>
-        <div class="chat-ctx-pill" id="ctxCountry" style="display:none;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          <span id="ctxCountryText"></span>
-        </div>
-        <div class="topbar-avatar" id="topbarAvatar">?</div>
-      </div>
-    </header>
-
-    <div class="chat-messages" id="chatMessages">
-      <div class="messages-inner">
-        <div class="chat-welcome-state" id="chatWelcome">
-          <div class="chat-welcome-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <h3>AI Assistant</h3>
-          <p id="welcomeSubtext">Powered by Google Gemini. Ask anything about your committee, country positions, UN resolutions, or MUN procedure. Full detailed answers every time.</p>
-          <div class="chat-suggestions" id="suggestionsBox"></div>
-        </div>
-        <div id="messages"></div>
-        <div class="typing-state" id="typingState" style="display:none;">
-          <div class="msg-avatar ai">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div class="typing-bubble">
-            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
-          </div>
-        </div>
-      </div>
+      <p class="auth-switch">Already have an account? <a href="login.html">Sign in</a></p>
     </div>
+  </div>
 
-    <div class="chat-input-dock">
-      <div class="chat-input-wrap">
-        <div class="chat-context-tag" id="inputCtxTag">No context set</div>
-        <textarea class="chat-textarea" id="chatInput" placeholder="Ask anything about MUN, your committee, country, resolutions..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-        <button class="chat-send" id="sendBtn" onclick="sendMessage()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-      <div class="chat-input-note">Powered by Google Gemini · For research purposes · Verify with official UN documents</div>
-    </div>
-  </main>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script>
-  // ── CONFIG ──
-  const GEMINI_API_KEY = 'AIzaSyDNQLTxeghCtIkg1aplQ_v3WDn4b_qTa3o'; // paste from aistudio.google.com
-  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-  const fc={apiKey:"AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",authDomain:"delegate-iq-2025.firebaseapp.com",projectId:"delegate-iq-2025",storageBucket:"delegate-iq-2025.firebasestorage.app",messagingSenderId:"612696020579",appId:"1:612696020579:web:90255861a0d531f2580a56"};
-  if(!firebase.apps.length) firebase.initializeApp(fc);
-  const auth = firebase.auth();
-
-  let munSetup = {}, userProfile = {}, chatHistory = [];
-  try { munSetup = JSON.parse(localStorage.getItem('diq_setup') || '{}'); } catch(e){}
-  try { userProfile = JSON.parse(localStorage.getItem('diq_profile') || '{}'); } catch(e){}
-
-  // Get active MUN context
-  try {
-    const muns = JSON.parse(localStorage.getItem('diq_muns') || '[]');
-    const active = muns.find(m => m.active);
-    if (active) munSetup = { committee: active.committee, country: active.country, topic: active.topic, conferenceName: active.name };
-  } catch(e){}
-
-  const committee = munSetup.committee || '';
-  const country = munSetup.country || '';
-  const topic = munSetup.topic || '';
-
-  const SYSTEM_PROMPT = `You are DelegateIQ, an expert MUN (Model United Nations) AI assistant with deep knowledge of:
-- UN resolutions, international law, treaties and conventions
-- Country foreign policies, voting histories and geopolitical positions
-- MUN procedure (Points of Order, caucus types, resolution writing, debate rules)
-- Committee-specific knowledge (UNSC, UNGA, WHO, HRC, UNHRC, UNODC, Indian committees etc)
-- Position paper writing, opening speeches, clause drafting, debate strategy
-
-${committee ? `Delegate's committee: ${committee}` : ''}
-${country ? `Representing: ${country}` : ''}
-${topic ? `Agenda topic: ${topic}` : ''}
-
-RESPONSE RULES - CRITICAL:
-- Always give complete, thorough answers — never one or two lines
-- Every answer needs: background/context, current situation, key facts, relevant UN resolutions with numbers
-- Use **bold** for headings and key terms
-- When asked about country position: historical context + current stance + key arguments + relevant resolutions
-- When asked about topic: full background + UN framework + key debates between blocs
-- Cite real UN resolution numbers (e.g. UNSC Res. 2254, UNGA Res. 3314)
-- Minimum 150-200 words per answer
-- Write as if preparing a smart student for a real committee`;
-
-  auth.onAuthStateChanged(user => {
-    if (!user) { window.location.replace('login.html'); return; }
-
-    const guard = document.getElementById('authGuard');
-    const app = document.getElementById('appShell');
-    guard.style.opacity = '0'; guard.style.transition = 'opacity 0.3s';
-    setTimeout(() => { guard.style.display = 'none'; app.style.display = 'flex'; }, 300);
-
-    const name = userProfile.displayName || user.displayName || user.email.split('@')[0];
-    const initials = userProfile.initials || name.substring(0, 2).toUpperCase();
-    document.getElementById('sidebarAvatar').textContent = initials;
-    document.getElementById('sidebarName').textContent = name;
-    document.getElementById('topbarAvatar').textContent = initials;
-
-    // Context pills
-    if (committee) {
-      document.getElementById('ctxCommittee').style.display = 'flex';
-      document.getElementById('ctxCommitteeText').textContent = committee;
-    }
-    if (country) {
-      document.getElementById('ctxCountry').style.display = 'flex';
-      document.getElementById('ctxCountryText').textContent = country;
-    }
-
-    document.getElementById('inputCtxTag').textContent =
-      (committee || country) ? `${committee || ''}${committee && country ? ' · ' : ''}${country || ''}` : 'No context — set up on Dashboard';
-
-    document.getElementById('welcomeSubtext').textContent =
-      (committee || country || topic)
-        ? `Context: ${[committee, topic, country].filter(Boolean).join(' · ')}. Ask anything — full answers every time.`
-        : 'No MUN context set. Go to Dashboard to add a MUN. Ask anything about MUN procedure, resolutions, or country positions.';
-
-    // Suggestions
-    const suggestions = committee || country ? [
-      country ? `What is ${country}'s full position on ${topic || 'this agenda topic'} and why?` : `What are the key debates in ${committee}?`,
-      topic ? `Explain the complete background and history of "${topic}"` : `What are the most important procedure rules in ${committee}?`,
-      `How do I write a strong opening speech${country ? ' for ' + country : ''}?`,
-      country ? `What counter-arguments will opposing blocs use against ${country}?` : `How do I raise a Point of Order correctly?`
-    ] : [
-      'Explain how the UN Security Council works and its veto power',
-      'How do I write preambulatory and operative clauses properly?',
-      'What is a Point of Order and when should I use it?',
-      'How do I write a strong MUN position paper?'
-    ];
-
-    document.getElementById('suggestionsBox').innerHTML = suggestions.map(s =>
-      `<button class="chat-suggestion" onclick="askSuggestion(this)">${s}</button>`
-    ).join('');
-
-    // Check prefill from research page
-    const prefill = localStorage.getItem('diq_ai_prefill');
-    if (prefill) {
-      localStorage.removeItem('diq_ai_prefill');
-      document.getElementById('chatInput').value = prefill;
-      sendMessage();
-    }
-  });
-
-  // ── GEMINI API CALL ──
-  async function callGemini(userMessage) {
-    chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
-
-    const body = {
-      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      contents: chatHistory,
-      generationConfig: { maxOutputTokens: 1500, temperature: 0.7 }
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqNmnpQRg5uUYu4Pp_k0k90wNBmJxpuH0",
+      authDomain: "delegate-iq-2025.firebaseapp.com",
+      projectId: "delegate-iq-2025",
+      storageBucket: "delegate-iq-2025.firebasestorage.app",
+      messagingSenderId: "612696020579",
+      appId: "1:612696020579:web:90255861a0d531f2580a56"
     };
 
-    const response = await fetch(GEMINI_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Already logged in → dashboard
+    auth.onAuthStateChanged(user => {
+      if (user) window.location.href = 'dashboard.html';
     });
 
-    const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
+    let isSubmitting = false;
 
-    const reply = data.candidates[0].content.parts[0].text;
-    chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+    function setLoading(loading) {
+      isSubmitting = loading;
+      const btn = document.getElementById('signupBtn');
+      const gBtn = document.getElementById('googleBtn');
+      if (loading) {
+        btn.innerHTML = '<span class="spinner"></span>Creating account...';
+        btn.classList.add('btn-loading');
+        gBtn.disabled = true;
+      } else {
+        btn.innerHTML = 'Create Account →';
+        btn.classList.remove('btn-loading');
+        gBtn.disabled = false;
+      }
+    }
 
-    // Keep last 10 turns
-    if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-    return reply;
-  }
+    function showError(msg) {
+      const el = document.getElementById('authError');
+      el.textContent = msg;
+      el.classList.add('show');
+      document.getElementById('authSuccess').style.display = 'none';
+    }
 
-  // ── DEEPER EXPLANATION ──
-  async function callGeminiDeeper(originalQ, originalA) {
-    const body = {
-      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      contents: [
-        { role: 'user', parts: [{ text: originalQ }] },
-        { role: 'model', parts: [{ text: originalA }] },
-        { role: 'user', parts: [{ text: 'Go much deeper. Add: specific historical examples, timeline of key events, actual UN resolution numbers with dates, how different country blocs (Western, G77, BRICS, etc.) view this differently, and specific debate strategy tips for using this knowledge in committee.' }] }
-      ],
-      generationConfig: { maxOutputTokens: 1500, temperature: 0.7 }
-    };
+    function showSuccess() {
+      document.getElementById('authError').classList.remove('show');
+      document.getElementById('authSuccess').style.display = 'block';
+    }
 
-    const response = await fetch(GEMINI_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
+    function saveProfile(uid, data) {
+      localStorage.setItem('diq_profile', JSON.stringify({
+        uid,
+        ...data,
+        badges: ['first_login'],
+        conferences: [],
+        researchCount: 0
+      }));
+    }
 
-    const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
-    return data.candidates[0].content.parts[0].text;
-  }
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (isSubmitting) return; // prevent double submit
 
-  // ── SEND ──
-  window.sendMessage = async function() {
-    const input = document.getElementById('chatInput');
-    const text = input.value.trim();
-    if (!text) return;
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const school = document.getElementById('school').value.trim();
+      const password = document.getElementById('password').value;
 
-    document.getElementById('chatWelcome').style.display = 'none';
-    appendUserMsg(text);
-    input.value = ''; input.style.height = 'auto';
+      if (!fname || !lname) { showError('Please enter your first and last name.'); return; }
+      if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
 
-    const btn = document.getElementById('sendBtn');
-    btn.disabled = true;
-    document.getElementById('typingState').style.display = 'flex';
-    scrollBottom();
+      setLoading(true);
 
-    try {
-      const reply = await callGemini(text);
-      document.getElementById('typingState').style.display = 'none';
-      appendAIMsg(text, reply);
-
-      // Track research + badges
       try {
-        const p = JSON.parse(localStorage.getItem('diq_profile') || '{}');
-        p.researchCount = (p.researchCount || 0) + 1;
-        if (!p.badges) p.badges = ['first_login'];
-        if (p.researchCount === 1 && !p.badges.includes('first_research')) p.badges.push('first_research');
-        if (p.researchCount >= 10 && !p.badges.includes('ten_research')) p.badges.push('ten_research');
-        localStorage.setItem('diq_profile', JSON.stringify(p));
-      } catch(e) {}
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        const displayName = fname + ' ' + lname;
+        const initials = (fname[0] + lname[0]).toUpperCase();
 
-    } catch(err) {
-      document.getElementById('typingState').style.display = 'none';
-      const msg = GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE'
-        ? 'Gemini API key not configured. Get your free key at aistudio.google.com and add it to ai-chat.html.'
-        : err.message.includes('400') ? 'Invalid request. Please try again.'
-        : err.message.includes('429') ? 'Rate limit reached. Wait a moment and try again.'
-        : 'Connection error. Check your internet and try again.';
-      appendErrorMsg(msg);
-    }
+        await cred.user.updateProfile({ displayName });
 
-    btn.disabled = false;
-    scrollBottom();
-  };
+        saveProfile(cred.user.uid, {
+          firstName: fname,
+          lastName: lname,
+          displayName,
+          email,
+          school: school || '',
+          initials
+        });
 
-  function appendUserMsg(text) {
-    const msgs = document.getElementById('messages');
-    const d = document.createElement('div');
-    d.className = 'msg user';
-    d.innerHTML = `<div class="msg-bubble">${esc(text)}</div>`;
-    msgs.appendChild(d);
-    scrollBottom();
-  }
+        showSuccess();
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
 
-  function appendErrorMsg(text) {
-    const msgs = document.getElementById('messages');
-    const d = document.createElement('div');
-    d.className = 'msg ai';
-    d.innerHTML = `
-      <div class="msg-avatar ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-      <div class="msg-bubble" style="background:var(--rosy-pale);border-color:rgba(176,112,112,0.25);">
-        <p style="color:var(--rosy);font-weight:500;">${esc(text)}</p>
-      </div>`;
-    msgs.appendChild(d);
-    scrollBottom();
-  }
+      } catch (err) {
+        setLoading(false);
+        const msgs = {
+          'auth/email-already-in-use': '⚠️ This email is already registered. Try signing in!',
+          'auth/weak-password': '⚠️ Password must be at least 6 characters.',
+          'auth/invalid-email': '⚠️ Please enter a valid email address.',
+          'auth/network-request-failed': '⚠️ No internet connection. Check your WiFi.',
+          'auth/too-many-requests': '⚠️ Too many attempts. Please wait a moment.',
+          'auth/unauthorized-domain': '⚠️ Domain not authorized. Contact support.',
+        };
+        showError(msgs[err.code] || '⚠️ ' + err.message);
+      }
+    });
 
-  function appendAIMsg(question, text) {
-    const msgs = document.getElementById('messages');
-    const id = 'msg' + Date.now();
-    const d = document.createElement('div');
-    d.className = 'msg ai';
-    d.innerHTML = `
-      <div class="msg-avatar ai">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </div>
-      <div class="msg-bubble" id="${id}">
-        <div id="ans-${id}">${formatText(esc(text))}</div>
-        <div class="msg-actions">
-          <button class="msg-action primary" id="expbtn-${id}" onclick="loadDeeper('${id}','${esc(question)}','${esc(text)}')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-            Explain more
-          </button>
-          <button class="msg-action" onclick="copyMsg('${id}', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy
-          </button>
-        </div>
-        <div id="exp-${id}" style="display:none;">
-          <div class="expanded-divider"></div>
-          <div class="expanded-content" id="deep-${id}">
-            <p style="color:var(--text-4);font-size:13px;">Loading deeper analysis from Gemini...</p>
-          </div>
-        </div>
-      </div>`;
-    msgs.appendChild(d);
-  }
+    document.getElementById('googleBtn').addEventListener('click', async () => {
+      if (isSubmitting) return;
+      setLoading(true);
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const cred = await auth.signInWithPopup(provider);
+        const user = cred.user;
+        const parts = (user.displayName || 'Delegate User').split(' ');
+        saveProfile(user.uid, {
+          firstName: parts[0],
+          lastName: parts.slice(1).join(' '),
+          displayName: user.displayName || 'Delegate',
+          email: user.email,
+          school: '',
+          initials: (parts[0][0] + (parts[1]?.[0] || '')).toUpperCase()
+        });
+        showSuccess();
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
+      } catch (err) {
+        setLoading(false);
+        if (err.code !== 'auth/popup-closed-by-user') {
+          showError('⚠️ Google sign-in failed. Try again.');
+        }
+      }
+    });
 
-  window.loadDeeper = async function(id, question, answer) {
-    const btn = document.getElementById('expbtn-' + id);
-    const exp = document.getElementById('exp-' + id);
-    const deep = document.getElementById('deep-' + id);
+    window.togglePw = function() {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      document.querySelector('.toggle-pw').textContent = input.type === 'password' ? '👁' : '🔒';
+    };
 
-    if (exp.style.display !== 'none' && deep.dataset.loaded) {
-      exp.style.display = 'none';
-      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Explain more`;
-      return;
-    }
-
-    exp.style.display = 'block';
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Loading...`;
-    btn.disabled = true;
-    scrollBottom();
-
-    try {
-      const deeper = await callGeminiDeeper(question, answer);
-      deep.innerHTML = formatText(esc(deeper));
-      deep.dataset.loaded = 'true';
-      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Show less`;
-      btn.disabled = false;
-      btn.onclick = function() {
-        exp.style.display = 'none';
-        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Explain more`;
-        btn.onclick = function() { loadDeeper(id, question, answer); };
-      };
-    } catch(err) {
-      deep.innerHTML = '<p style="color:var(--rosy);font-size:13px;">Could not load deeper explanation. Try again.</p>';
-      btn.innerHTML = 'Explain more'; btn.disabled = false;
-    }
-    scrollBottom();
-  };
-
-  window.copyMsg = function(id, btn) {
-    const ans = document.getElementById('ans-' + id)?.textContent || '';
-    const deep = document.getElementById('deep-' + id)?.textContent || '';
-    const deepText = deep && !deep.includes('Loading') ? '\n\n---\n' + deep : '';
-    navigator.clipboard.writeText(ans + deepText);
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied`;
-    setTimeout(() => btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`, 2000);
-  };
-
-  window.askSuggestion = function(btn) {
-    document.getElementById('chatInput').value = btn.textContent;
-    sendMessage();
-    document.getElementById('chatWelcome').style.display = 'none';
-  };
-
-  window.handleKey = function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
-  window.autoResize = function(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; };
-
-  function formatText(t) {
-    return t
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n• /g, '<br>• ')
-      .replace(/\n- /g, '<br>• ')
-      .replace(/\n(\d+)\. /g, (m, n) => '<br><strong>' + n + '.</strong> ')
-      .replace(/\n/g, '<br>')
-      .replace(/^/, '<p>').replace(/$/, '</p>');
-  }
-
-  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function scrollBottom() { const c = document.getElementById('chatMessages'); setTimeout(() => c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' }), 100); }
-
-  document.getElementById('logoutBtn').addEventListener('click', async e => {
-    e.preventDefault();
-    await auth.signOut();
-    localStorage.removeItem('diq_profile'); localStorage.removeItem('diq_setup');
-    window.location.href = '../index.html';
-  });
-
-  document.addEventListener('click', e => {
-    const sb = document.getElementById('sidebar');
-    const mb = document.querySelector('.topbar-menu-btn');
-    if (sb.classList.contains('open') && !sb.contains(e.target) && mb && !mb.contains(e.target)) sb.classList.remove('open');
-  });
-</script>
+    document.getElementById('password').addEventListener('input', function() {
+      const v = this.value;
+      const el = document.getElementById('pwStrength');
+      if (!v) { el.innerHTML = ''; return; }
+      const s = v.length >= 10 && /[A-Z]/.test(v) && /[0-9]/.test(v) ? 'strong' : v.length >= 6 ? 'medium' : 'weak';
+      const labels = { weak: '🔴 Too short (min 6)', medium: '🟡 Medium', strong: '🟢 Strong' };
+      el.innerHTML = '<span class="pw-label ' + s + '">' + labels[s] + '</span>';
+    });
+  </script>
 </body>
 </html>
