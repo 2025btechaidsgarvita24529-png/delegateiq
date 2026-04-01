@@ -5,8 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chats — DelegateIQ</title>
   <link rel="stylesheet" href="../css/style.css"/>
+<style>
+  /* Auth Guard Overlay */
+  #authGuard {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #FAF7F2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 99999;
+  }
+  #authGuard .ag-logo {
+    width: 56px; height: 56px;
+    background: #D97706;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 900; color: white;
+    font-family: 'Trebuchet MS', sans-serif;
+    animation: agPulse 1.5s ease-in-out infinite;
+  }
+  #authGuard p {
+    font-size: 14px; font-weight: 600;
+    color: #8B7355;
+    font-family: 'Nunito', sans-serif;
+  }
+  @keyframes agPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.95); opacity: 0.8; }
+  }
+</style>
 </head>
 <body class="app-page">
+  <!-- AUTH GUARD -->
+  <style id="authGuardStyle">
+    body.app-page .main-content, body.app-page aside.sidebar { visibility:hidden !important; }
+    #authLoadingScreen { position:fixed;top:0;left:0;width:100%;height:100%;background:#FAF7F2;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999; }
+    .auth-spinner { width:44px;height:44px;border:3px solid #E8DFD0;border-top-color:#D97706;border-radius:50%;animation:authspin 0.8s linear infinite;margin-bottom:16px; }
+    @keyframes authspin { to { transform:rotate(360deg); } }
+    .auth-logo-txt { font-size:28px;font-weight:900;color:#1A1008;font-family:Trebuchet MS; }
+    .auth-sub-txt { font-size:13px;color:#8B7355;font-weight:600;margin-top:6px; }
+  </style>
+  <div id="authLoadingScreen">
+    <div class="auth-spinner"></div>
+    <div class="auth-logo-txt">DelegateIQ</div>
+    <div class="auth-sub-txt">Verifying your session...</div>
+  </div>
+  <!-- Auth Guard Overlay - hidden after auth check -->
+  <div id="authGuard">
+    <div class="ag-logo">D</div>
+    <p>Verifying your session...</p>
+  </div>
+
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo"><div class="logo-mark">D</div><span class="logo-text">DelegateIQ</span></div>
     <nav class="sidebar-nav">
@@ -114,8 +167,17 @@
       ]},
     ];
 
+    
+    function authReady() {
+      var s = document.getElementById('authLoadingScreen');
+      var g = document.getElementById('authGuardStyle');
+      if(s) s.style.display='none';
+      if(g) g.textContent='';
+    }
     firebase.auth().onAuthStateChanged(user => {
-      if(!user){window.location.href='login.html';return;}
+      if(!user){ window.location.replace('login.html'); return; }
+      var guard=document.getElementById('authGuard');
+      if(guard){ guard.style.opacity='0'; guard.style.transition='opacity 0.3s'; setTimeout(function(){guard.style.display='none';},300); }
       currentUser = user;
       let p={};try{p=JSON.parse(localStorage.getItem('diq_profile')||'{}');}catch(e){}
       userName = p.displayName || user.displayName || user.email.split('@')[0];
